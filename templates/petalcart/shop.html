@@ -1,0 +1,87 @@
+{% block content %}
+<style>
+  /* General body styling for a clean background */
+body {
+    background-color: #f4f4f9;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* The main container that centers the card */
+.flower_container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
+    min-height: 80vh;        /* Ensure it takes up most of the screen space */
+    padding: 20px;
+}
+
+/* The individual card styling */
+.flower_card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Flower Name (H1) */
+.flower_card h1 {
+    color: #333;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* Image Container */
+.flower_pic img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Shop Name (H6) */
+.shop_name {
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+/* Price Tag */
+.price_tag {
+    color: #28a745; /* A nice green color for price */
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+/* Description Text */
+.description {
+    color: #666;
+    line-height: 1.6;
+    margin-top: 15px;
+}
+
+</style>
+{% include 'navbar.html' %}
+<div class = "flower_grid">
+
+<div class = "flower_card">
+  <a ><h1> {{flower.flowername}}</h1></a>
+  <div class = "flower_pic"> <img src="{{flower.img.url}}" alt="{{flower.flowername}}"></div>
+  {% if flower.shop %}
+  <h6>Shop: {{flower.shop.shop_name}}</h6>
+  
+  {% endif %}
+  <p>Price: &#8377;{{flower.price}}</p>
+  <p>{{flower.desc}}</p>
+</div>
+
+</div>
+{% endblock %}

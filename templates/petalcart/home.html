@@ -1,0 +1,49 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>
+  .flower_pic{
+    width: 100%;
+    max-width: 250px;   
+    aspect-ratio: 1 / 1; 
+    overflow: hidden;
+    border-radius: 10px;
+    background: #f8f8f8;   
+  }
+  .flower_pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  }
+  .flower_grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  .flower_card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px;
+    background: #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .flower_card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+</style>
+<div class = "flower_grid">
+{% for flower in flowers %}
+<div class = "flower_card">
+  <a href =  "{% url 'shop' flower.flower_id %}"><h1> {{flower.flowername}}</h1></a>
+  <div class = "flower_pic"> <img src="{{flower.img.url}}" alt="{{flower.flowername}}"></div>
+  {% if flower.shop %}
+  <h6>Shop: {{flower.shop.shop_name}}</h6>
+  
+  {% endif %}
+  <p>Price: &#8377;{{flower.price}}</p>
+  <p>{{flower.desc}}</p>
+</div>
+{% endfor%}
+</div>
+{% endblock %}

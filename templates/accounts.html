@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>
+  .container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+</style>
+<div class = "container">
+
+  <div>
+    <h2> User Login/Register </h2>
+    <a href = " {% url 'register_account' %} ">register </a>
+    <a href = " {% url 'login_account' %} ">Login </a>
+  </div>
+    <h2> Shops Login/Register </h2>
+  <div>
+  
+  </div>
+</div>
+{% endblock %}
