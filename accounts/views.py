@@ -1,8 +1,19 @@
 from django.shortcuts import render,redirect
 from .forms import RegisterForm
-from django.contrib import messages
+from django.contrib import auth,messages
+from django.contrib.auth import authenticate,login
 def login(request):
-  pass
+  if request.method == 'POST':
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(request,username = username,password = password)
+    if user is not None:
+      auth.login(request,user)
+      return redirect("/")
+    else:
+      messages.info(request,"invalid credentails ")
+      return redirect("login_account")
+  return render(request,"login.html")
 
 def register(request):
   form = RegisterForm()
@@ -20,3 +31,7 @@ def register(request):
 
 def accounts(request):
   return render(request,"accounts.html")
+
+def logout(request):
+  auth.logout(request)
+  return redirect("/")
