@@ -1,5 +1,9 @@
 <div>
   
   <a href = "{% url 'home' %}"> Home</a>
+  {% if user.is_authenticated %}
+  <a href = "{% url 'logout' %}"> Logut  </a>
+  {% else  %}
   <a href = "{% url 'accounts'%}"> Accounts</a>
+  {% endif %} 
 </div>

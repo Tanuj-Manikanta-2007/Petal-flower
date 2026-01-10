@@ -1,14 +1,15 @@
 from django.shortcuts import render,redirect
 from .forms import RegisterForm
 from django.contrib import auth,messages
-from django.contrib.auth import authenticate,login
-def login(request):
+from django.contrib.auth import authenticate,login as auth_login
+def login_account(request):
   if request.method == 'POST':
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(request,username = username,password = password)
     if user is not None:
-      auth.login(request,user)
+      auth_login(request,user)
+      print("Login successful")
       return redirect("/")
     else:
       messages.info(request,"invalid credentails ")
@@ -32,6 +33,6 @@ def register(request):
 def accounts(request):
   return render(request,"accounts.html")
 
-def logout(request):
+def logout_account(request):
   auth.logout(request)
   return redirect("/")
