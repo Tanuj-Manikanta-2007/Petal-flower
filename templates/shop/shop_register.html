@@ -1,0 +1,105 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<style>
+  :root {
+    --primary: #2e7d32;
+    --bg: #f4f7f6;
+  }
+
+  body { background: var(--bg); }
+
+  .register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    padding: 20px;
+  }
+
+  .register-card {
+    width: 100%;
+    max-width: 480px;
+    background: #fff;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    animation: fadeIn 0.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity:0; transform: translateY(20px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  h1 {
+    text-align: center;
+    color: var(--primary);
+    margin-bottom: 10px;
+  }
+
+  .subtitle { text-align:center; margin-bottom:25px; color:#777; }
+
+  .alert { padding: 12px; border-radius: 10px; margin-bottom: 15px; text-align:center; }
+  .alert.success { background: #e8f5e9; color: var(--primary); }
+  .alert.error { background: #fdecea; color: #c62828; }
+
+  form p { margin-bottom: 18px; }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    outline: none;
+  }
+
+  input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(46,125,50,0.15);
+  }
+
+  .register-btn {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .register-btn:hover { background: #256628; }
+
+  .footer { text-align: center; margin-top: 15px; }
+  .footer a { color: var(--primary); font-weight: bold; }
+</style>
+
+<div class="register-container">
+  <div class="register-card">
+
+    <h1>🌸 Register Your Flower Shop</h1>
+    <p class="subtitle">Grow your business on PetalCart</p>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="register-btn" type="submit">Register Shop</button>
+    </form>
+
+    <div class="footer">
+      <p>Already have a shop? <a href="{% url 'shop_login' %}">Login</a></p>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
