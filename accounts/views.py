@@ -14,7 +14,7 @@ def login_account(request):
     else:
       messages.info(request,"invalid credentails ")
       return redirect("login_account")
-  return render(request,"login.html")
+  return render(request,"accounts/login.html")
 
 def register(request):
   form = RegisterForm()
@@ -28,10 +28,10 @@ def register(request):
       messages.error(request,"Please correct the errors below")  
       form = RegisterForm()
     
-  return render(request,"register.html",{"form" : form})
+  return render(request,"accounts/register.html",{"form" : form})
 
 def accounts(request):
-  return render(request,"accounts.html")
+  return render(request,"accounts/accounts.html")
 
 def logout_account(request):
   auth.logout(request)

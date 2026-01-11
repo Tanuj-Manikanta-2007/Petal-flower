@@ -8,7 +8,8 @@ class FlowerShop(models.Model):
   shop_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
   shop_name = models.CharField(max_length=255)
   shop_address = models.CharField(max_length=255)
-
+  owner = models.OneToOneField(User, on_delete=models.CASCADE,
+                               null = True , blank = True )
   def __str__(self):
     return self.shop_name
   
