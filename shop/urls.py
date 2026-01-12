@@ -7,6 +7,7 @@ urlpatterns = [
   path('dashboard/',views.dashboard,name = 'shop_dashboard'),
   path('register/',views.shop_register,name = "shop_register"),
   path('login/',views.shop_login,name = "shop_login"),
+  path('addflower/',views.createflower,name = "add_flower"),
   
   
 ]

@@ -5,6 +5,7 @@ from django.contrib.auth.models import Group
 from .forms import ShopRegisterForm
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
+from .forms import FlowerForm
 # Create your views here.
 def home(request):
   flowers = pcmodel.Flower.objects.all()
@@ -50,4 +51,17 @@ def shop_login(request):
 
 def dashboard(request):
   return render(request,"shop/dashboard.html")
-    
+
+def createflower(request):
+  form = FlowerForm()
+
+  if request.method == 'POST':
+    form = FlowerForm(request.POST, request.FILES)
+    if form.is_valid():
+      flower = form.save(commit = False)
+      flower.shop = pcmodel.FlowerShop.objects.get(owner = request.user)
+      flower.save()
+      return redirect('shop_home')
+  
+  context = {"form" : form}
+  return render(request,"shop/flower_form.html",context)
