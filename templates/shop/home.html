@@ -43,6 +43,7 @@
   {% endif %}
   <p>Price: &#8377;{{flower.price}}</p>
   <p>{{flower.desc}}</p>
+  <a href = "{% url 'delete_flower' flower.flower_id %}"> Delete </a>
 </div>
 {% endfor%}
 </div>

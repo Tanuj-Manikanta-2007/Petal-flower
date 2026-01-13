@@ -1,4 +1,4 @@
-from django.shortcuts import render , redirect
+from django.shortcuts import render , redirect, get_object_or_404
 from petalcart import models as pcmodel
 from django.contrib import messages
 from django.contrib.auth.models import Group
@@ -65,3 +65,10 @@ def createflower(request):
   
   context = {"form" : form}
   return render(request,"shop/flower_form.html",context)
+
+def delete_flower(request,pk):
+  flower = get_object_or_404(pcmodel.Flower,flower_id = int(pk))
+  if request.method == "POST":
+    flower.delete()
+    return redirect('shop_home')
+  return render(request,'shop/delete.html',{"obj" : flower})
