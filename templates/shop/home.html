@@ -43,7 +43,9 @@
   {% endif %}
   <p>Price: &#8377;{{flower.price}}</p>
   <p>{{flower.desc}}</p>
+  {% if request.user == flower.shop.owner %}
   <a href = "{% url 'delete_flower' flower.flower_id %}"> Delete </a>
+  {% endif %}
 </div>
 {% endfor%}
 </div>
