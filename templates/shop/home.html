@@ -36,6 +36,9 @@
 {% for flower in flowers %}
 <div class = "flower_card">
   <a href =  "{% url 'shop' flower.flower_id %}"><h1> {{flower.flowername}}</h1></a>
+  {% if request.user == flower.shop.owner %}
+  <a href = "{% url 'update_flower' flower.flower_id %}"> Update </a>
+  {% endif %}
   <div class = "flower_pic"> <img src="{{flower.img.url}}" alt="{{flower.flowername}}"></div>
   {% if flower.shop %}
   <h6>Shop: {{flower.shop.shop_name}}</h6>

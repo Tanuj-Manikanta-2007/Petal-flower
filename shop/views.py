@@ -72,3 +72,15 @@ def delete_flower(request,pk):
     flower.delete()
     return redirect('shop_home')
   return render(request,'shop/delete.html',{"obj" : flower})
+
+def update_flower(request,pk):
+  flower = get_object_or_404(pcmodel.Flower, flower_id = int(pk))
+  
+  if request.method == "POST" :
+    form = FlowerForm(request.POST,request.FILES,instance = flower)
+    if form.is_valid():
+      form.save()
+      return redirect('shop_home')
+  else:
+    form = FlowerForm(instance = flower)
+  return render(request,"shop/flower_form.html",{"form" : form})
