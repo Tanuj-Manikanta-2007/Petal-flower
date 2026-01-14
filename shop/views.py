@@ -10,7 +10,8 @@ from .forms import FlowerForm
 def home(request):
   flowers = pcmodel.Flower.objects.all()
   shops = pcmodel.FlowerShop.objects.all()
-  return render(request,"shop/home.html",{"flowers" : flowers,"shops" : shops})
+  comments = pcmodel.Comment.objects.all()
+  return render(request,"shop/home.html",{"flowers" : flowers,"shops" : shops,"comments" : comments})
 
 def shop_register(request):
   if request.method == "POST":
@@ -84,3 +85,7 @@ def update_flower(request,pk):
   else:
     form = FlowerForm(instance = flower)
   return render(request,"shop/flower_form.html",{"form" : form})
+
+def view_comments(request):
+    comments = pcmodel.Comment.objects.all()
+    return render(request, "petalcart/view_comment.html", {"comments": comments})

@@ -37,7 +37,7 @@
 <div class = "flower_card">
   <a href =  "{% url 'shop' flower.flower_id %}"><h1> {{flower.flowername}}</h1></a>
   {% if request.user == flower.shop.owner %}
-  <a href = "{% url 'update_flower' flower.flower_id %}"> Update </a>
+  <a href = "{% url 'update_flower' flower.flower_id %}"> Edit </a>
   {% endif %}
   <div class = "flower_pic"> <img src="{{flower.img.url}}" alt="{{flower.flowername}}"></div>
   {% if flower.shop %}
@@ -49,6 +49,7 @@
   {% if request.user == flower.shop.owner %}
   <a href = "{% url 'delete_flower' flower.flower_id %}"> Delete </a>
   {% endif %}
+  {% include 'view_comment.html'%}
 </div>
 {% endfor%}
 </div>
