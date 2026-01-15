@@ -18,4 +18,3 @@ class FlowerForm(ModelForm):
     model = Flower
     exclude = ["shop"]
     #fields = ["flowername", "img", "desc", "price"] 
-    

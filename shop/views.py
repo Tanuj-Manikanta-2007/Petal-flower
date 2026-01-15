@@ -89,3 +89,5 @@ def update_flower(request,pk):
 def view_comments(request):
     comments = pcmodel.Comment.objects.all()
     return render(request, "petalcart/view_comment.html", {"comments": comments})
+
+

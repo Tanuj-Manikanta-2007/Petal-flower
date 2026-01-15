@@ -46,3 +46,14 @@ def create_comment(request,pk):
       comment.save()
       return redirect('home')
   return render(request,"comment_form.html",{"form" : form})
+
+def update_comment(request,pk):
+  comment = get_object_or_404(Comment,comment_id = int(pk))
+  if request.method == "POST":
+    form =  CommentForm(request.POST,instance = comment)
+    if form.is_valid():
+      form.save()
+      return redirect('home')
+  else:
+    form = CommentForm(instance = comment)
+    return render(request,"comment_form.html",{"form" : form})

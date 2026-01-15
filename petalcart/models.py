@@ -29,6 +29,7 @@ class Flower(models.Model):
       return self.flowername
 
 class Comment(models.Model):
+    comment_id = models.UUIDField(primary_key = True,default = uuid.uuid4,editable= False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.TextField()
     # Adding related_name allows flower.comments.all()
