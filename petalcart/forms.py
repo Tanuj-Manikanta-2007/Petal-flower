@@ -22,4 +22,4 @@ class FlowerForm(ModelForm):
 class CommentForm(ModelForm):
   class Meta:
     model = Comment
-    fields = ["body"]
+    fields = ["body","rating"]

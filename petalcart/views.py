@@ -1,6 +1,7 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from .models import Flower,Comment,FlowerShop
 from .forms import CommentForm
+from django.db.models import Avg
 # Create your views here.
 
 
@@ -12,7 +13,11 @@ def home(request):
 
 def shop(request,pk):
   flower = get_object_or_404(Flower, flower_id=pk)
-  return render(request,"petalcart/shop.html",{"flower" : flower})
+  avg_rating = flower.comments.aggregate(Avg('rating'))['rating__avg'] or 0
+  return render(request, "petalcart/shop.html", {
+        "flower": flower,
+        "rating": avg_rating  
+    })
   
 
 def view_comment(request):
@@ -41,6 +46,9 @@ def create_comment(request,pk):
     form = CommentForm(request.POST)
     if form.is_valid():
       comment = form.save(commit = False)
+      rating = request.POST.get("rating")
+      # If rating is None or empty → set to 0
+      comment.rating = int(rating) if rating else 0
       comment.user = request.user
       comment.flower = flower
       comment.save()

@@ -1,12 +1,50 @@
 
 {% block content %}
+<style>
+  .stars {
+  display: inline-block;
+  font-size: 20px;
+  color: #ccc;
+}
+
+.star {
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.star.filled {
+  color: gold;
+}
+
+.star:hover,
+.star:hover ~ .star {
+  color: #ffda00;
+}
+
+</style>
 <div>
+  <div class="stars">
+    {% for _ in "12345" %}
+        {% if forloop.counter <= comment.rating %}
+            <span class="star filled">★</span>
+        {% else %}
+            <span class="star">★</span>
+        {% endif %}
+    {% endfor %}
+</div>
+
   <h4>Comments: <a href = "{% url 'create_comment' flower.flower_id %}" >Add</a></h4> 
   {% for comment in flower.comments.all %}
    <small> {{comment.user.username}} . {{comment.created | timesince}} ago </small>
+   {% if request.user == comment.user %}
    <a href = "{% url 'update_comment' comment.comment_id %}"> <p>{{comment.body}}</p> </a>
+   {% else  %}
+   <p>{{comment.body}}</p>
+   {% endif %}
   {% empty %}
    <p>No comments yet.</p>
    {% endfor %}
 </div>
 {% endblock %}
+</div>

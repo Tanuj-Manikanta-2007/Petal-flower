@@ -40,6 +40,7 @@ class Comment(models.Model):
     )
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    rating = models.IntegerField(default = 0)
 
     def __str__(self):
         # FIX: Changed self.flower.name to self.flower.flowername

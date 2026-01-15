@@ -68,6 +68,27 @@ body {
     margin-top: 15px;
 }
 
+  .stars {
+  display: inline-block;
+  font-size: 20px;
+  color: #ccc;
+}
+
+.star {
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.star.filled {
+  color: gold;
+}
+
+.star:hover,
+.star:hover ~ .star {
+  color: #ffda00;
+}
+
 </style>
 {% include 'navbar.html' %}
 <div class = "flower_grid">
@@ -81,7 +102,23 @@ body {
   {% endif %}
   <p>Price: &#8377;{{flower.price}}</p>
   <p>{{flower.desc}}</p>
-  {% include 'view_comment.html' %}
+  <p>Rating: {{ rating }}</p>
+  <a href="{% url 'view_comment' %}">
+    <div class="stars">
+        {% for _ in "12345" %}
+            {% if forloop.counter <= rating %}
+                <span class="star filled">★</span>
+            {% else %}
+                <span class="star">★</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+  </a>
+  {% if rating == 0 %}
+    <p>No ratings yet</p>
+  {% endif %}
+
+  
 </div>
 
 </div>
