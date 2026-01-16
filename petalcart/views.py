@@ -56,7 +56,7 @@ def create_comment(request,pk):
   return render(request,"comment_form.html",{"form" : form})
 
 def update_comment(request,pk):
-  comment = get_object_or_404(Comment,comment_id = int(pk))
+  comment = get_object_or_404(Comment,comment_id = pk)
   if request.method == "POST":
     form =  CommentForm(request.POST,instance = comment)
     if form.is_valid():
@@ -65,3 +65,12 @@ def update_comment(request,pk):
   else:
     form = CommentForm(instance = comment)
     return render(request,"comment_form.html",{"form" : form})
+
+def delete_comment(request, pk):
+    comment = get_object_or_404(Comment, comment_id=pk)
+    if request.user == comment.user:
+        comment.delete()
+        return redirect('view_comment')
+    else:
+        # Handle unauthorized access, e.g., redirect or show error
+        return redirect('home')
