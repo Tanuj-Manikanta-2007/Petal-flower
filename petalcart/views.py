@@ -9,6 +9,9 @@ def home(request):
   flowers = Flower.objects.all()
   shop = FlowerShop.objects.all()
   comments = Comment.objects.all()
+  for flower in flowers:
+        avg_rating = flower.comments.aggregate(avg=Avg('rating'))['avg'] or 0
+        flower.avg_rating = round(avg_rating)
   return render(request,"petalcart/home.html",{"flowers" : flowers, "shops" :shop, "Name" : "Tanuj","comments" : comments })
 
 def shop(request,pk):
@@ -20,10 +23,9 @@ def shop(request,pk):
     })
   
 
-def view_comment(request):
-  flowers = Flower.objects.all()
-  comments = Comment.objects.all()
-  return render(request,"petalcart/view_comment.html",{"flowers" : flowers,"comments" : comments})
+def view_comment(request,pk):
+  flower = get_object_or_404(Flower,flower_id = pk)
+  return render(request,"petalcart/view_comment.html",{"flower" : flower})
 
 ''' def createflower(request):
   form = FlowerForm()
@@ -70,7 +72,7 @@ def delete_comment(request, pk):
     comment = get_object_or_404(Comment, comment_id=pk)
     if request.user == comment.user:
         comment.delete()
-        return redirect('view_comment')
+        return redirect('home') 
     else:
         # Handle unauthorized access, e.g., redirect or show error
         return redirect('home')

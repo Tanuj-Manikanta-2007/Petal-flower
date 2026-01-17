@@ -86,8 +86,7 @@ def update_flower(request,pk):
     form = FlowerForm(instance = flower)
   return render(request,"shop/flower_form.html",{"form" : form})
 
-def view_comments(request):
-    comments = pcmodel.Comment.objects.all()
-    return render(request, "petalcart/view_comment.html", {"comments": comments})
+
+
 
 

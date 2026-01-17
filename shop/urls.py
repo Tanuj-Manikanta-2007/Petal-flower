@@ -8,9 +8,8 @@ urlpatterns = [
   path('register/',views.shop_register,name = "shop_register"),
   path('login/',views.shop_login,name = "shop_login"),
   path('addflower/',views.createflower,name = "add_flower"),
-  path('delete-flower/<uuid:pk>',views.delete_flower,name = "delete_flower"),
-  path('update-flower/<uuid:pk>',views.update_flower,name = "update_flower"),
-  path('view-comments/',views.view_comments,name = "view_comments"),
+ 
+  
   
 ]
 

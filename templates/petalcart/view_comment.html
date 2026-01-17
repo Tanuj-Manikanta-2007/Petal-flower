@@ -1,7 +1,6 @@
-
-{% block content %}
+{% include 'navbar.html' %}
 <style>
-  .stars {
+    .stars {
   display: inline-block;
   font-size: 20px;
   color: #ccc;
@@ -21,11 +20,9 @@
 .star:hover ~ .star {
   color: #ffda00;
 }
-
 </style>
-<div>
-  <h4>Comments: <a href = "{% url 'home' %}" >Back to Home</a></h4> 
-  {% for comment in comments %}
+<h4>Comments: <a href = "{% url 'create_comment' flower.flower_id %}" >Add Comment</a></h4> 
+  {% for comment in flower.comments.all %}
     <div>
       <h5>{{ comment.flower.flowername }}</h5>
       <small> {{ comment.user.username }} . {{ comment.created | timesince }} ago </small>
@@ -48,5 +45,3 @@
   {% empty %}
     <p>No comments yet.</p>
   {% endfor %}
-</div>
-{% endblock %}

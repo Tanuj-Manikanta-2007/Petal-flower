@@ -5,8 +5,8 @@ from . import views
 urlpatterns = [
   path('',views.home,name = 'home'),
   path('shop/<uuid:pk>/',views.shop,name = 'shop'),
-  path('view_comments/',views.view_comment,name = 'view_comment'),
-  path('create_comments/<uuid:pk>',views.create_comment,name = "create_comment"),
+  path('view_comments/<uuid:pk>',views.view_comment,name = 'view_comment'),
+  path('create_comment/<uuid:pk>',views.create_comment,name = "create_comment"),
   path('update_comment/<uuid:pk>',views.update_comment,name = "update_comment"),
   path('delete_comment/<uuid:pk>',views.delete_comment,name = "delete_comment"),
   

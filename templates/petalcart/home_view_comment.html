@@ -1,0 +1,46 @@
+
+{% block content %}
+<style>
+  .stars {
+  display: inline-block;
+  font-size: 20px;
+  color: #ccc;
+}
+
+.star {
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.star.filled {
+  color: gold;
+}
+
+.star:hover,
+.star:hover ~ .star {
+  color: #ffda00;
+}
+
+</style>
+<div>
+  <h4>Comments: <a href = "{% url 'create_comment' flower.flower_id %}" >Add Comment</a></h4> 
+  <h5>Avg Rating : <a href="{% url 'view_comment' flower.flower_id%}">
+    <div class="stars">
+        {% for _ in "12345" %}
+            {% if forloop.counter <= flower.avg_rating %}
+                <span class="star filled">★</span>
+            {% else %}
+                <span class="star">★</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+  </a>
+  {% if rating == 0 %}
+    <p>No ratings yet</p>
+  {% endif %} </h5>
+  <h5>No. Comments {{flower.comments.count}}</h5>
+
+  
+</div>
+{% endblock %}

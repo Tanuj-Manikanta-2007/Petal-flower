@@ -103,20 +103,7 @@ body {
   <p>Price: &#8377;{{flower.price}}</p>
   <p>{{flower.desc}}</p>
   <p>Rating: {{ rating }}</p>
-  <a href="{% url 'view_comment' %}">
-    <div class="stars">
-        {% for _ in "12345" %}
-            {% if forloop.counter <= rating %}
-                <span class="star filled">★</span>
-            {% else %}
-                <span class="star">★</span>
-            {% endif %}
-        {% endfor %}
-    </div>
-  </a>
-  {% if rating == 0 %}
-    <p>No ratings yet</p>
-  {% endif %}
+  {% include 'petalcart/view_comment.html' %}
 
   
 </div>
