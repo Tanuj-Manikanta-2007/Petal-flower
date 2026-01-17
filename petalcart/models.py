@@ -45,3 +45,24 @@ class Comment(models.Model):
     def __str__(self):
         # FIX: Changed self.flower.name to self.flower.flowername
         return f'Comment by {self.user.username} on {self.flower.flowername}'
+    
+class Cart(models.Model):
+   user = models.ForeignKey(User,on_delete=models.CASCADE)
+   created = models.DateTimeField(auto_now_add=True)
+
+class CartItem(models.Model):
+   cart = models.ForeignKey(Cart, on_delete = models.CASCADE)
+   flower = models.ForeignKey(Flower,on_delete = models.CASCADE)
+   quantity = models.PositiveIntegerField(default = 1)
+
+class Order(models.Model):
+   user = models.ForeignKey(User,on_delete = models.CASCADE)
+   total = models.DecimalField(max_digits= 10,decimal_places= 2)
+   status = models.CharField(max_length= 20,default = "Pending")
+   created = models.DateTimeField(auto_now_add = True)
+
+class OrderItem(models.Model):
+   order = models.ForeignKey(Order, on_delete = models.CASCADE)
+   flower = models.ForeignKey(Flower, on_delete = models.CASCADE)
+   quantiy = models.PositiveBigIntegerField()
+   price = models.DecimalField(max_digits=10,decimal_places=2)
