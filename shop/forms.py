@@ -1,9 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from petalcart.models import Flower
+from petalcart.models import Flower 
 from django.forms import ModelForm
-
+from .models import Stock
 
 class ShopRegisterForm(UserCreationForm):
   shop_name = forms.CharField(max_length =255)
@@ -17,4 +17,10 @@ class FlowerForm(ModelForm):
   class Meta:
     model = Flower
     exclude = ["shop"]
-    #fields = ["flowername", "img", "desc", "price"] 
+    #fields = ["flowername", "img", "desc", "price"]
+
+class StockForm(ModelForm):
+  class Meta:
+    model = Stock
+    exclude = ["flower", "shop"]
+

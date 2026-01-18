@@ -25,7 +25,7 @@ def shop(request,pk):
 
 def view_comment(request,pk):
   flower = get_object_or_404(Flower,flower_id = pk)
-  return render(request,"petalcart/view_comment.html",{"flower" : flower})
+  return render(request,"shop/view_comment.html",{"flower" : flower})
 
 ''' def createflower(request):
   form = FlowerForm()
@@ -55,7 +55,7 @@ def create_comment(request,pk):
       comment.flower = flower
       comment.save()
       return redirect('home')
-  return render(request,"comment_form.html",{"form" : form})
+  return render(request,"form.html",{"form" : form})
 
 def update_comment(request,pk):
   comment = get_object_or_404(Comment,comment_id = pk)
@@ -66,7 +66,7 @@ def update_comment(request,pk):
       return redirect('home')
   else:
     form = CommentForm(instance = comment)
-    return render(request,"comment_form.html",{"form" : form})
+    return render(request,"form.html",{"form" : form})
 
 def delete_comment(request, pk):
     comment = get_object_or_404(Comment, comment_id=pk)

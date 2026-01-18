@@ -1,18 +1,22 @@
 {% extends 'main.html' %}
 {% block content %}
 <style>
-  .flower_pic{
+  .flower_pic {
+    width: 100%;
+    height: 250px;             /* fixed height for all images */
     display: flex;
-  justify-content: center; /* Horizontal alignment */
-  align-items: center;     /* Vertical alignment */
-  height: 100vh;           /* Full screen height to show centering */
-  border: 1px solid #ccc;  
-  }
-  .flower_pic img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  }
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #f8f8f8;
+}
+
+.flower_pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;       /* keeps image ratio */
+}
   .flower_grid{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -48,7 +52,8 @@
   {% if request.user == flower.shop.owner %}
   <a href = "{% url 'delete_flower' flower.flower_id %}"> Delete </a>
   {% endif %}
-  {% include 'view_comment.html'%}
+  {% include 'shop/view_comment.html'%}
+  <a href = "{% url 'add_flower_stock' flower.shop.shop_id flower.flower_id %}"> <h4> Current Stock : {{flower.stock.quantity}}  </h4> </a>
 </div>
 {% endfor%}
 </div>

@@ -5,13 +5,16 @@ from django.contrib.auth.models import Group
 from .forms import ShopRegisterForm
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
-from .forms import FlowerForm
+from .forms import FlowerForm, StockForm
+from .models import Stock
+
 # Create your views here.
-def home(request):
-  flowers = pcmodel.Flower.objects.all()
-  shops = pcmodel.FlowerShop.objects.all()
-  comments = pcmodel.Comment.objects.all()
-  return render(request,"shop/home.html",{"flowers" : flowers,"shops" : shops,"comments" : comments})
+def shop_home(request):
+  shop = get_object_or_404(pcmodel.FlowerShop,owner = request.user)
+  flowers = shop.flowers.all()
+  comments = pcmodel.Comment.objects.filter(flower__shop = shop)
+  stocks = Stock.objects.filter(shop = shop)
+  return render(request,"shop/home.html",{"flowers" : flowers,"shop" : shop,"comments" : comments , "stocks" : stocks})
 
 def shop_register(request):
   if request.method == "POST":
@@ -63,7 +66,7 @@ def createflower(request):
       flower.shop = pcmodel.FlowerShop.objects.get(owner = request.user)
       flower.save()
       return redirect('shop_home')
-  
+     
   context = {"form" : form}
   return render(request,"shop/flower_form.html",context)
 
@@ -86,7 +89,20 @@ def update_flower(request,pk):
     form = FlowerForm(instance = flower)
   return render(request,"shop/flower_form.html",{"form" : form})
 
-
+def add_flower_stock(request,pk1,pk2):
+  existing_stock = Stock.objects.filter(flower_id = pk2).first()
+  if request.method == 'POST':
+    form = StockForm(request.POST,request.FILES,instance = existing_stock)
+    if form.is_valid():
+      stock = form.save(commit = False)
+      stock.shop = get_object_or_404(pcmodel.FlowerShop,shop_id = pk1)
+      stock.flower = get_object_or_404(pcmodel.Flower,flower_id = pk2)
+      stock.save()
+      return redirect('shop_home')
+  else:
+    form = StockForm(instance = existing_stock)
+  return render(request,"form.html",{"form" : form})
+  
 
 
 
