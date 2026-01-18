@@ -44,6 +44,7 @@
   <p>Price: &#8377;{{flower.price}}</p>
   <p>{{flower.desc}}</p>
   {% include 'petalcart/home_view_comment.html' %}
+  <h4> In Stock : {{flower.stock.quantity}} </h4>
 </div>
 {% endfor%}
 </div>

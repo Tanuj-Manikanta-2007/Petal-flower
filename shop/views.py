@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from .forms import ShopRegisterForm
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
-from .forms import FlowerForm, StockForm
+from .forms import FlowerForm, StockForm , FlowerStockForm
 from .models import Stock
 
 # Create your views here.
@@ -92,7 +92,7 @@ def update_flower(request,pk):
 def add_flower_stock(request,pk1,pk2):
   existing_stock = Stock.objects.filter(flower_id = pk2).first()
   if request.method == 'POST':
-    form = StockForm(request.POST,request.FILES,instance = existing_stock)
+    form = FlowerStockForm(request.POST,request.FILES,instance = existing_stock)
     if form.is_valid():
       stock = form.save(commit = False)
       stock.shop = get_object_or_404(pcmodel.FlowerShop,shop_id = pk1)
@@ -100,7 +100,27 @@ def add_flower_stock(request,pk1,pk2):
       stock.save()
       return redirect('shop_home')
   else:
-    form = StockForm(instance = existing_stock)
+    form = FlowerStockForm(instance = existing_stock)
+  return render(request,"form.html",{"form" : form})
+
+def add_stock(request,pk):
+  shop = get_object_or_404(pcmodel.FlowerShop,shop_id = pk)
+  existing_stock = Stock.objects.filter(shop=shop).first()
+  if request.method == 'POST':
+    form = StockForm(request.POST,request.FILES,shop = shop, instance = existing_stock)
+    if form.is_valid():
+      is_update = form.instance.pk is not None 
+      stock = form.save(commit = False)
+      stock.shop = shop
+      stock.save()
+      if is_update:
+                messages.info(request, f"Stock for {stock.flower.flowername} was updated successfully.")
+      else:
+          messages.success(request, f"New stock for {stock.flower.flowername} was added.")
+      return redirect('shop_home')
+  else:
+    form = StockForm(shop = shop, instance = existing_stock)
+  
   return render(request,"form.html",{"form" : form})
   
 
