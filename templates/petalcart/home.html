@@ -1,38 +1,126 @@
 {% extends 'main.html' %}
 {% block content %}
+
 <style>
-  .flower_pic{
-    width: 100%;
-    max-width: 250px;   
-    aspect-ratio: 1 / 1; 
-    overflow: hidden;
-    border-radius: 10px;
-    background: #f8f8f8;   
-  }
-  .flower_pic img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  }
-  .flower_grid{
+
+.flower_grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 20px;
-    padding: 20px;
-  }
-  .flower_card {
-    border: 1px solid #e0e0e0;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+    padding: 30px;
+    margin-top: 20px;
+}
+
+.flower_card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    transition: 0.3s ease;
+    border: 1px solid #f0d9ff;
+}
+
+.flower_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    border-color: #d63384;
+}
+
+.flower_card h1 {
+    font-size: 1.4rem;
+    color: #d63384;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.flower_pic {
+    width: 100%;
+    height: 230px;
+    overflow: hidden;
     border-radius: 12px;
-    padding: 15px;
-    background: #fff;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .flower_card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  }
+    background: #f8eaff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flower_pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.flower_card h6 {
+    margin-top: 10px;
+    color: #6c4f7d;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.flower_card p {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #555;
+}
+
+.price {
+    font-size: 1.2rem;
+    color: #28a745;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.stock {
+    margin-top: 10px;
+    font-weight: 600;
+    color: #6c4f7d;
+}
+
+.flower_card a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.flower_card a:hover {
+    color: #b12a6b;
+}
+
 </style>
-<div class = "flower_grid">
+
+<div class="flower_grid">
+
+{% for flower in flowers %}
+<div class="flower_card">
+
+    <a href="{% url 'shop' flower.flower_id %}">
+        <h1>{{ flower.flowername }}</h1>
+    </a>
+
+    <div class="flower_pic">
+        <img src="{{ flower.img.url }}" alt="{{ flower.flowername }}">
+    </div>
+
+    {% if flower.shop %}
+    <h6>Sold by: {{ flower.shop.shop_name }}</h6>
+    {% endif %}
+
+    <p class="price">₹{{ flower.price }}</p>
+
+    <p>{{ flower.desc|truncatewords:20 }}</p>
+
+    {% include 'petalcart/home_view_comment.html' %}
+
+    <p class="stock">In Stock: {{ flower.stock.quantity }}</p>
+
+</div>
+{% endfor %}
+
+</div>
+
+{% endblock %}
+
+<!-- <div class = "flower_grid">
 {% for flower in flowers %}
 <div class = "flower_card">
   <a href =  "{% url 'shop' flower.flower_id %}"><h1> {{flower.flowername}}</h1></a>
@@ -48,4 +136,4 @@
 </div>
 {% endfor%}
 </div>
-{% endblock %}
+-->

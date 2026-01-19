@@ -47,6 +47,7 @@ class Comment(models.Model):
         return f'Comment by {self.user.username} on {self.flower.flowername}'
     
 class Cart(models.Model):
+   cart_id = models.UUIDField(primary_key = True, default = uuid.uuid4,editable=False)
    user = models.ForeignKey(User,on_delete=models.CASCADE)
    created = models.DateTimeField(auto_now_add=True)
 
@@ -56,6 +57,7 @@ class CartItem(models.Model):
    quantity = models.PositiveIntegerField(default = 1)
 
 class Order(models.Model):
+   order_id = models.UUIDField(primary_key = True,default = uuid.uuid4,editable = False)
    user = models.ForeignKey(User,on_delete = models.CASCADE)
    total = models.DecimalField(max_digits= 10,decimal_places= 2)
    status = models.CharField(max_length= 20,default = "Pending")
