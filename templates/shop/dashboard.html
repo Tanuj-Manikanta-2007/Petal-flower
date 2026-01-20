@@ -1,9 +1,73 @@
+<style>
+
+.shop-container {
+    background: #F3F4F6;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: 40px auto;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Main heading */
+.shop-container h2 {
+    color: #2F855A; /* Green primary */
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+/* Buttons */
+.btn-shop {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #2F855A; /* Green */
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 10px 0;
+    transition: 0.2s;
+}
+
+.btn-shop:hover {
+    background: #276749;
+}
+
+/* Pink muted buttons */
+.btn-accent {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #F9CCD3; /* Soft pink */
+    color: #8B3A42;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 10px 0;
+    transition: 0.2s;
+}
+
+.btn-accent:hover {
+    background: #F7B5C0;
+}
+
+</style>
 
 
-<div>
+<div class="shop-container">
 
-  <h2> Welcome to petalcart register login your shops </h2>
-  <a href = "{% url 'shop_dashboard' %}"> Shops </a>
-  <p> <a href = "{% url 'shop_register' %}"> Register </a></p>
-  <p> <a href = "{% url 'shop_login' %}">  Login</a></p>
+  <h2>Welcome to PetalCart — Manage Your Flower Shop</h2>
+
+  <a href="{% url 'shop_dashboard' %}" class="btn-shop">Shops Dashboard</a>
+
+  <br>
+
+  <a href="{% url 'shop_register' %}" class="btn-accent">Register Shop</a>
+
+  <br>
+
+  <a href="{% url 'shop_login' %}" class="btn-accent">Login Shop</a>
+
 </div>

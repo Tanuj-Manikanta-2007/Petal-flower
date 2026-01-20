@@ -113,6 +113,20 @@
 
     <p class="stock">In Stock: {{ flower.stock.quantity }}</p>
 
+    <form method = "POST" action = "{% url 'process_purchase' flower.flower_id %}">
+        {% csrf_token %}
+
+        <input type = "number"  name = "quantity" value = "1" min = "1"
+         max = "{{flower.stock.quantity}}" class = "qty-input">
+        <button type = "submit" name = "action"  value = "add_to_cart" class = "btn btn-secondary">
+            Add to Cart
+        </button>
+        <button type = "Submit" name = "action" value = "buy_now" class = "btn btn-primary">
+            But now
+        </button>
+
+    </form>
+
 </div>
 {% endfor %}
 

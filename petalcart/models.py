@@ -66,5 +66,5 @@ class Order(models.Model):
 class OrderItem(models.Model):
    order = models.ForeignKey(Order, on_delete = models.CASCADE)
    flower = models.ForeignKey(Flower, on_delete = models.CASCADE)
-   quantiy = models.PositiveBigIntegerField()
+   quantity = models.PositiveBigIntegerField()
    price = models.DecimalField(max_digits=10,decimal_places=2)

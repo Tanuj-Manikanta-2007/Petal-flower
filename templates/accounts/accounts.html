@@ -1,25 +1,102 @@
 {% extends 'main.html' %}
 {% block content %}
+
 <style>
-  .container{
+
+.accounts-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-  }
-</style>
-<div class = "container">
+    gap: 30px;
+    padding: 40px 60px;
+    margin-top: 20px;
+    background: #F3F4F6;
+    font-family: 'Inter', sans-serif;
+}
 
-  <div>
-    <h2> User Login/Register </h2>
-    <a href = " {% url 'register_account' %} ">register </a>
-    {%if user.is_authenticated %}
-    <a href = " {% url 'logout' %} ">Logout </a>
-    {% else %}
-    <a href = " {% url 'login_account' %} ">Login </a>
-    {% endif %}
-  </div>
-    {% include 'shop/dashboard.html' %}
-  <div>
-  
-  </div>
+.account-card {
+    background: #FFFFFF;
+    padding: 28px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border: 1px solid #E5E7EB;
+    transition: 0.2s ease;
+}
+
+.account-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+}
+
+.account-card h2 {
+    color: #2F855A;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Primary Green Button */
+.btn-main {
+    display: block;
+    padding: 10px 20px;
+    background: #2F855A;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    text-align: center;
+    transition: 0.2s ease;
+    margin-bottom: 10px;
+}
+
+.btn-main:hover {
+    background: #276749;
+}
+
+/* Neutral grey button */
+.btn-secondary {
+    display: block;
+    padding: 10px 20px;
+    background: #E5E7EB;
+    color: #374151;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    text-align: center;
+    transition: 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background: #D1D5DB;
+}
+
+@media (max-width: 768px) {
+    .accounts-container {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+}
+
+</style>
+
+<div class="accounts-container">
+
+    <div class="account-card">
+        <h2>User Login / Register</h2>
+
+        <a href="{% url 'register_account' %}" class="btn-main">Register</a>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="btn-secondary">Logout</a>
+        {% else %}
+            <a href="{% url 'login_account' %}" class="btn-secondary">Login</a>
+        {% endif %}
+    </div>
+
+    <div class="account-card">
+        {% include 'shop/dashboard.html' %}
+    </div>
+
 </div>
+
 {% endblock %}

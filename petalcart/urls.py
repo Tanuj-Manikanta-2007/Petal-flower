@@ -9,6 +9,7 @@ urlpatterns = [
   path('create_comment/<uuid:pk>',views.create_comment,name = "create_comment"),
   path('update_comment/<uuid:pk>',views.update_comment,name = "update_comment"),
   path('delete_comment/<uuid:pk>',views.delete_comment,name = "delete_comment"),
+  path('process_purchase/<uuid:pk>/',views.process_purchase,name = "process_purchase"),
   
 ]
 

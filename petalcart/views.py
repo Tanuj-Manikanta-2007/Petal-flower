@@ -1,8 +1,10 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Flower,Comment,FlowerShop
+from .models import Flower,Comment,FlowerShop,Order,OrderItem,Cart,CartItem
 from .forms import CommentForm
 from django.db.models import Avg
 from shop.models import Stock
+from django.contrib import messages
+from django.db import transaction
 # Create your views here.
 
 
@@ -77,3 +79,55 @@ def delete_comment(request, pk):
     else:
         # Handle unauthorized access, e.g., redirect or show error
         return redirect('home')
+
+def process_purchase(request,pk):
+   if request.method != "POST":
+      return render("home")
+   flower = get_object_or_404(Flower,flower_id = pk)
+   quantity = int(request.POST.get("quantity",1))
+   action = request.POST.get("action")
+   
+   if quantity <= 0:
+      messages.error(request,"Invalid quantity.")
+      return redirect("shop",pk)
+   if flower.stock.quantity < quantity :
+      messages.error(request,f"Only {flower.stock.quantity} in stock.")
+      return redirect("shop",pk)
+   
+   if action == "add_to_cart":
+      return handle_add_to_cart(request,pk,quantity)
+   elif action == "buy_now" :
+      return handle_buy_now(request,pk,quantity)
+   else:
+      messages.error(request,"Unknown action.")
+      return redirect("home")
+   
+def handle_buy_now(request,flower_id,quantity):
+   flower = get_object_or_404(Flower,flower_id = flower_id)
+   with transaction.atomic():
+      order = Order.objects.create(
+         user = request.user,
+         total = flower.price * quantity,
+         status = "Pending"
+      )
+      OrderItem.objects.create(
+         order = order,
+         flower = flower,
+         quantity = quantity,
+         price = flower.price
+      )
+      flower.stock.quantity -= quantity
+      flower.stock.save()
+
+      messages.success(request,"Order placed successfully! ")
+      return redirect("home")
+   
+def handle_add_to_cart(request,flower_id,quantity):
+  flower = get_object_or_404(flower,flower_id = flower_id)
+  cart,created = Cart.objects.get_or_create(user = request.user)
+  cart_item,created = CartItem.objects.get_or_create(cart = cart,flower = flower)
+  cart_item.quantity += quantity
+  cart_item.save()
+
+  messages.success(request,f"{flower.flowername} added to cart")
+  return redirect("cart_view")
