@@ -12,6 +12,7 @@ urlpatterns = [
   path('process_purchase/<uuid:pk>/',views.process_purchase,name = "process_purchase"),
   path('order_history/',views.user_order_history,name = "order_history"),
   path('cart_view/',views.cart_display,name = "cart_display"),
+  path('checkout_cart/',views.checkout_cart,name = "checkout_cart"),
 ]
 
 if settings.DEBUG:

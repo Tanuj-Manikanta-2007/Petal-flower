@@ -51,7 +51,7 @@
     {% else %}
       <div style="padding: 40px; text-align: center;">
         <h3>Your cart is empty 🌸</h3>
-        <a href="{% url 'shop_home' %}" style="color: #007bff;">Continue Shopping</a>
+        <a href="{% url 'home' %}" style="color: #007bff;">Continue Shopping</a>
       </div>
     {% endif %}
   </div>
@@ -73,7 +73,7 @@
       <span>₹{{ total_price }}</span>
     </div>
     
-    <form method="POST" action="{% url 'process_purchase'  %}">
+    <form method="POST" action="{% url 'checkout_cart'  %}">
         {% csrf_token %}
         <input type="hidden" name="action" value="buy_now">
         <button type="submit" class="checkout-btn">Proceed to Checkout</button>

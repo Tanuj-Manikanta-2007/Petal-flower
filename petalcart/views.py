@@ -85,14 +85,19 @@ def process_purchase(request,pk):
       return render("home")
    flower = get_object_or_404(Flower,flower_id = pk)
    quantity = int(request.POST.get("quantity",1))
-   action = request.POST.get("action")
-   
+   action = request.POST.get("action") 
+   try:
+        stock = flower.stock   # this will raise Stock.DoesNotExist if missing
+   except Stock.DoesNotExist:
+        messages.error(request, "Stock is not created for this flower yet.")
+        return redirect("home")
+
    if quantity <= 0:
       messages.error(request,"Invalid quantity.")
-      return redirect("shop",pk)
+      return redirect("home")
    if flower.stock.quantity < quantity :
       messages.error(request,f"Only {flower.stock.quantity} in stock.")
-      return redirect("shop",pk)
+      return redirect("home")
    
    if action == "add_to_cart":
       return handle_add_to_cart(request,pk,quantity)
@@ -143,3 +148,33 @@ def cart_display(request):
       item.subtotal = item.flower.price * item.quantity
    total_price = sum(item.subtotal for item in items)
    return render(request,"petalcart/cart_display.html", {"items" : items, "total_price" : total_price})
+
+def checkout_cart(request):
+   if request.method != 'POST' :
+      return redirect('cart_view')
+   cart = get_object_or_404(Cart,user = request.user)
+   cart_items = cart.items.all()
+   if not cart_items :
+      messages.error(request,"Your cart is empy ...")
+      return redirect('cart_display')
+   with transaction.atomic():
+      total = sum(item.flower.price * item.quantity for item in cart_items )
+      order = Order.objects.create(
+         user = request.user,
+         total = total,
+         status = "Pending"
+      )
+
+      for item in cart_items:
+          OrderItem.objects.create(
+            order= order,
+            flower = item.flower,
+            quantity = item.quantity,
+            price = item.flower.price
+          )
+
+          item.flower.stock.quantity -= item.quantity
+          item.flower.stock.save()
+      cart_items.delete()
+   return redirect('order_history')
+  
