@@ -52,7 +52,7 @@ class Cart(models.Model):
    created = models.DateTimeField(auto_now_add=True)
 
 class CartItem(models.Model):
-   cart = models.ForeignKey(Cart, on_delete = models.CASCADE)
+   cart = models.ForeignKey(Cart, on_delete = models.CASCADE, related_name = "items")
    flower = models.ForeignKey(Flower,on_delete = models.CASCADE)
    quantity = models.PositiveIntegerField(default = 1)
 

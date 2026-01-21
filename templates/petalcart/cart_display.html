@@ -1,0 +1,84 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>
+  .cart-wrapper { max-width: 1100px; margin: 30px auto; padding: 0 15px; display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+  
+  /* Left Side: Items */
+  .cart-items { background: #fff; border-radius: 12px; border: 1px solid #eee; overflow: hidden; }
+  .cart-header { padding: 15px 20px; background: #f8f9fa; border-bottom: 1px solid #eee; font-weight: bold; }
+  .cart-item { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #f1f1f1; }
+  .item-img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-right: 20px; }
+  .item-details { flex-grow: 1; }
+  .item-price { font-weight: bold; color: #2c3e50; font-size: 1.1rem; }
+  
+  /* Right Side: Summary */
+  .cart-summary { background: #f8f9fa; padding: 25px; border-radius: 12px; height: fit-content; position: sticky; top: 20px; border: 1px solid #eee; }
+  .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1rem; }
+  .total-row { border-top: 2px solid #ddd; padding-top: 15px; margin-top: 15px; font-size: 1.3rem; font-weight: bold; }
+  
+  .checkout-btn { width: 100%; padding: 15px; background: #28a745; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+  .checkout-btn:hover { background: #218838; }
+
+  @media (max-width: 768px) { .cart-wrapper { grid-template-columns: 1fr; } }
+</style>
+
+<div class="cart-wrapper">
+  <!-- Left Column: Product List -->
+  <div class="cart-items">
+    <div class="cart-header">Your Shopping Cart</div>
+    {% if items %}
+      {% for item in items %}
+      <div class="cart-item">
+        <img src="{{ item.flower.img.url }}" class="item-img" alt="{{ item.flower.flowername }}">
+        <div class="item-details">
+          <h4 style="margin:0 0 5px 0;">{{ item.flower.flowername }}</h4>
+          <p class="text-muted">Unit Price: ₹{{ item.flower.price }}</p>
+          
+          <!-- Quantity Update Form -->
+          
+            {% csrf_token %}
+            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" 
+                   max="{{ item.flower.stock.quantity }}" style="width:60px; padding:5px; border-radius:4px; border:1px solid #ddd;">
+            <button type="submit" style="margin-left:10px; background:none; border:none; color:#007bff; cursor:pointer;">Update</button>
+           
+          </form>
+        </div>
+        <div class="item-price">
+          ₹{{ item.subtotal }} <!-- You can calculate this in the view or model -->
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div style="padding: 40px; text-align: center;">
+        <h3>Your cart is empty 🌸</h3>
+        <a href="{% url 'shop_home' %}" style="color: #007bff;">Continue Shopping</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Right Column: Checkout Summary -->
+  {% if items %}
+  <div class="cart-summary">
+    <h3>Summary</h3>
+    <div class="summary-row">
+      <span>Subtotal</span>
+      <span>₹{{ total_price }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Shipping</span>
+      <span style="color: #28a745;">FREE</span>
+    </div>
+    <div class="total-row">
+      <span>Total</span>
+      <span>₹{{ total_price }}</span>
+    </div>
+    
+    <form method="POST" action="{% url 'process_purchase'  %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="buy_now">
+        <button type="submit" class="checkout-btn">Proceed to Checkout</button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

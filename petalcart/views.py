@@ -123,11 +123,23 @@ def handle_buy_now(request,flower_id,quantity):
       return redirect("home")
    
 def handle_add_to_cart(request,flower_id,quantity):
-  flower = get_object_or_404(flower,flower_id = flower_id)
+  flower = get_object_or_404(Flower,flower_id = flower_id)
   cart,created = Cart.objects.get_or_create(user = request.user)
   cart_item,created = CartItem.objects.get_or_create(cart = cart,flower = flower)
   cart_item.quantity += quantity
   cart_item.save()
 
   messages.success(request,f"{flower.flowername} added to cart")
-  return redirect("cart_view")
+  return redirect("cart_display")
+
+def user_order_history(request):
+   orders = Order.objects.filter(user = request.user)
+   return render(request,"petalcart/order_history.html", {"orders" : orders})
+
+def cart_display(request):
+   cart, created = Cart.objects.get_or_create(user = request.user)
+   items = cart.items.all()
+   for item in items:
+      item.subtotal = item.flower.price * item.quantity
+   total_price = sum(item.subtotal for item in items)
+   return render(request,"petalcart/cart_display.html", {"items" : items, "total_price" : total_price})
