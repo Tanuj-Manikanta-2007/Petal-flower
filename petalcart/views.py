@@ -177,4 +177,32 @@ def checkout_cart(request):
           item.flower.stock.save()
       cart_items.delete()
    return redirect('order_history')
+
+def delete_cart(request, pk):
+    cart_item = get_object_or_404(CartItem, id=pk, cart__user=request.user)
+    cart_item.delete()
+    messages.success(request, "Item removed from cart.")
+    return redirect('cart_display') 
+
   
+def update_cart(request,pk):
+   if request.method == 'POST' :
+      cart_item = get_object_or_404(CartItem,id = pk)
+      try:
+         new_quantity = int(request.POST.get('quantity'))
+      except:
+         messages.error(request,"Invalid quantity .. ")
+         return redirect("cart_display")
+      if not hasattr(cart_item.flower,'stock'):
+         messages.error(request,"This item is currently unavailable.")
+         cart_item.delete()
+      elif new_quantity > cart_item.flower.stock.quantity :
+         messages.error(request,f"Only {cart_item.flower.stock.quantity} items left in stock . ")
+      elif new_quantity <= 0:
+         cart_item.delete()
+         messages.info(request, " Item removes from the cart.")
+      else:
+         cart_item.quantity = new_quantity
+         cart_item.save()
+         messages.success(request,"Cart updated . ")
+   return redirect('cart_display')

@@ -35,12 +35,12 @@
           <p class="text-muted">Unit Price: ₹{{ item.flower.price }}</p>
           
           <!-- Quantity Update Form -->
-          
+          <form method = "post" action = "{% url 'update_cart' item.id %}" style="display:flex; align-items:center;"> 
             {% csrf_token %}
             <input type="number" name="quantity" value="{{ item.quantity }}" min="1" 
                    max="{{ item.flower.stock.quantity }}" style="width:60px; padding:5px; border-radius:4px; border:1px solid #ddd;">
             <button type="submit" style="margin-left:10px; background:none; border:none; color:#007bff; cursor:pointer;">Update</button>
-           
+            <a href = "{% url 'delete_cart' item.id %}" style="margin-left:20px; color:#dc3545; text-decoration:none; font-size:0.9rem;">Remove</a>
           </form>
         </div>
         <div class="item-price">
@@ -51,7 +51,8 @@
     {% else %}
       <div style="padding: 40px; text-align: center;">
         <h3>Your cart is empty 🌸</h3>
-        <a href="{% url 'home' %}" style="color: #007bff;">Continue Shopping</a>
+        <a href="{% url 'home
+        ' %}" style="color: #007bff;">Continue Shopping</a>
       </div>
     {% endif %}
   </div>

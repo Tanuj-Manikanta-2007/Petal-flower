@@ -13,6 +13,8 @@ urlpatterns = [
   path('order_history/',views.user_order_history,name = "order_history"),
   path('cart_view/',views.cart_display,name = "cart_display"),
   path('checkout_cart/',views.checkout_cart,name = "checkout_cart"),
+  path('update_cart/<int:pk>/',views.update_cart,name = "update_cart"),
+  path('delete_cart/<int:pk>/',views.delete_cart,name = "delete_cart"),
 ]
 
 if settings.DEBUG:
