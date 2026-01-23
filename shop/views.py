@@ -7,8 +7,10 @@ from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
 from .forms import FlowerForm, StockForm , FlowerStockForm
 from .models import Stock
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+
 def shop_home(request):
   shop = get_object_or_404(pcmodel.FlowerShop,owner = request.user)
   flowers = shop.flowers.all()
@@ -53,6 +55,7 @@ def shop_login(request):
       messages.error(request,"Invalid username or password ")
   return render(request,"shop/shop_login.html")
 
+@login_required(login_url= 'accounts/')
 def dashboard(request):
   return render(request,"shop/dashboard.html")
 
@@ -70,6 +73,7 @@ def createflower(request):
   context = {"form" : form}
   return render(request,"shop/flower_form.html",context)
 
+@login_required(login_url= 'accounts/')
 def delete_flower(request,pk):
   flower = get_object_or_404(pcmodel.Flower,flower_id = int(pk))
   if request.method == "POST":
@@ -89,6 +93,7 @@ def update_flower(request,pk):
     form = FlowerForm(instance = flower)
   return render(request,"shop/flower_form.html",{"form" : form})
 
+@login_required(login_url= 'accounts/')
 def add_flower_stock(request,pk1,pk2):
   existing_stock = Stock.objects.filter(flower_id = pk2).first()
   if request.method == 'POST':
@@ -103,6 +108,7 @@ def add_flower_stock(request,pk1,pk2):
     form = FlowerStockForm(instance = existing_stock)
   return render(request,"form.html",{"form" : form})
 
+@login_required(login_url= 'accounts/')
 def add_stock(request,pk):
   shop = get_object_or_404(pcmodel.FlowerShop,shop_id = pk)
   existing_stock = Stock.objects.filter(shop=shop).first()
@@ -123,11 +129,13 @@ def add_stock(request,pk):
   
   return render(request,"form.html",{"form" : form})
 
+@login_required(login_url= 'accounts/')
 def myorders(request):
   shop = get_object_or_404(pcmodel.FlowerShop,owner = request.user)
   items = pcmodel.OrderItem.objects.filter(flower__shop = shop)
   return render(request,'shop/myorders.html',{"items" : items})
 
+@login_required(login_url= 'accounts/')
 def update_order_status(request,pk):
   if request.method == "POST" :
     order=  get_object_or_404(pcmodel.Order,order_id = pk)

@@ -5,6 +5,7 @@ from django.db.models import Avg
 from shop.models import Stock
 from django.contrib import messages
 from django.db import transaction
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -59,7 +60,7 @@ def create_comment(request,pk):
       comment.save()
       return redirect('home')
   return render(request,"form.html",{"form" : form})
-
+@login_required(login_url= 'accounts/')
 def update_comment(request,pk):
   comment = get_object_or_404(Comment,comment_id = pk)
   if request.method == "POST":
@@ -70,7 +71,7 @@ def update_comment(request,pk):
   else:
     form = CommentForm(instance = comment)
     return render(request,"form.html",{"form" : form})
-
+@login_required(login_url= 'accounts/')
 def delete_comment(request, pk):
     comment = get_object_or_404(Comment, comment_id=pk)
     if request.user == comment.user:
@@ -79,7 +80,7 @@ def delete_comment(request, pk):
     else:
         # Handle unauthorized access, e.g., redirect or show error
         return redirect('home')
-
+@login_required(login_url = 'accounts/')
 def process_purchase(request,pk):
    if request.method != "POST":
       return render("home")
