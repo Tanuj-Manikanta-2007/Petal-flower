@@ -12,6 +12,8 @@ urlpatterns = [
   path('delete_flower/<uuid:pk>/',views.delete_flower,name = "delete_flower"),  
   path('add_flower_stock/<uuid:pk1>/<uuid:pk2>/',views.add_flower_stock,name = "add_flower_stock"),
   path('add_stock/<uuid:pk>/',views.add_stock,name ="add_stock"),
+  path('MyOrders/',views.myorders,name = "myorders"),
+  path('update_order_Status/<uuid:pk>/',views.update_order_status,name = "update_order_status"),
 ]
 
 if settings.DEBUG:

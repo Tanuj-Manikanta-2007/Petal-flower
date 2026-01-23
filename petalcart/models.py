@@ -57,6 +57,13 @@ class CartItem(models.Model):
    quantity = models.PositiveIntegerField(default = 1)
 
 class Order(models.Model):
+   STATUS_CHOICES = [
+        ('Pending', 'Pending'),      
+        ('Accepted', 'Accepted'),    
+        ('Shipped', 'Shipped'),      
+        ('Delivered', 'Delivered'),  
+        ('Cancelled', 'Cancelled'),  
+    ]
    order_id = models.UUIDField(primary_key = True,default = uuid.uuid4,editable = False)
    user = models.ForeignKey(User,on_delete = models.CASCADE)
    total = models.DecimalField(max_digits= 10,decimal_places= 2)

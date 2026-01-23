@@ -122,6 +122,24 @@ def add_stock(request,pk):
     form = StockForm(shop = shop, instance = existing_stock)
   
   return render(request,"form.html",{"form" : form})
+
+def myorders(request):
+  shop = get_object_or_404(pcmodel.FlowerShop,owner = request.user)
+  items = pcmodel.OrderItem.objects.filter(flower__shop = shop)
+  return render(request,'shop/myorders.html',{"items" : items})
+
+def update_order_status(request,pk):
+  if request.method == "POST" :
+    order=  get_object_or_404(pcmodel.Order,order_id = pk)
+    new_status = request.POST.get('new_status')
+    valid_status = ['Accepted', 'Shipped', 'Delivered', 'Cancelled']
+    if new_status in valid_status:
+      order.status = new_status
+      order.save()
+      messages.success(request, f"Order #{str(order.order_id)[:8]} is now {new_status}.")
+
+  return redirect('myorders')
+  
   
 
 

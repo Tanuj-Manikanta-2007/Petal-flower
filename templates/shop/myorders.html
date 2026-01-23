@@ -1,0 +1,127 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>
+  .shop-container { max-width: 1100px; margin: 30px auto; padding: 0 15px; }
+  .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  
+  /* Table Styling */
+  .order-table-card { 
+      background: white; border-radius: 12px; border: 1px solid #eee; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; 
+  }
+  .table { width: 100%; border-collapse: collapse; margin: 0; }
+  .table th { background: #f8f9fa; padding: 15px; text-align: left; font-size: 0.9rem; color: #666; border-bottom: 2px solid #eee; }
+  .table td { padding: 15px; border-bottom: 1px solid #f1f1f1; vertical-align: middle; }
+  
+  /* Product Info */
+  .prod-info { display: flex; align-items: center; gap: 12px; }
+  .prod-img { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; border: 1px solid #eee; }
+  
+  /* Badges */
+  .badge { 
+      padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; 
+      text-transform: uppercase; display: inline-block;
+  }
+  .status-pending { background: #fff3cd; color: #856404; }
+  .status-shipped { background: #cce5ff; color: #004085; }
+  .status-completed { background: #d4edda; color: #155724; }
+
+  /* Hover effect */
+  .table tr:hover { background-color: #fcfcfc; }
+  .btn-accept {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-accept:hover {
+    background: #218838;
+}
+/* Matching your status choices */
+.status-pending { background: #fff3cd; color: #856404; }   /* Yellow */
+.status-accepted { background: #d1ecf1; color: #0c5460; }  /* Blue */
+.status-shipped { background: #cce5ff; color: #004085; }   /* Dark Blue */
+.status-delivered { background: #d4edda; color: #155724; } /* Green */
+.status-cancelled { background: #f8d7da; color: #721c24; } /* Red */
+
+</style>
+
+<div class="shop-container">
+    <div class="dashboard-header">
+        <h2>Shop Sales Dashboard</h2>
+        <div class="stats-mini">
+            <small class="text-muted">Total Sales:</small> <strong>{{ vendor_items.count }}</strong>
+        </div>
+    </div>
+
+    <div class="order-table-card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Product</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Qty</th>
+                    <th>Earnings</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td style="font-family: monospace; color: #888;">#{{ item.order.order_id|stringformat:".8s" }}</td>
+                    <td>
+                        <div class="prod-info">
+                            <img src="{{ item.flower.img.url }}" class="prod-img">
+                            <span>{{ item.flower.flowername }}</span>
+                        </div>
+                    </td>
+                    <td>{{ item.order.created|date:"d M Y" }}</td>
+                    <td>{{ item.order.user.username }}</td>
+                    <td>×{{ item.quantity }}</td>
+                    <td style="font-weight: bold;">₹{{ item.price }}</td>
+                    <td>
+                        <span class="badge status-{{ item.order.status|lower }}">
+                            {{ item.order.status }}
+                        </span>
+                    </td>
+                    <td>
+                      <td>
+                  {% if item.order.status == "Pending" %}
+                  <form method="POST" action="{% url 'update_order_status' item.order.order_id %}" style="display:flex; gap:5px;">
+                      {% csrf_token %}
+                      
+                      <!-- Changed from hidden to a visible dropdown -->
+                      <select name="new_status" style="padding: 5px; border-radius: 4px; border: 1px solid #ddd;">
+                          <option value="Accepted">Accept</option>
+                          <option value="Shipped">Ship</option>
+                          <option value="Cancelled">Cancel</option>
+                      </select>
+
+                      <button type="submit" class="btn-accept">Update</button>
+                  </form>
+                  {% else %}
+                  <span class="badge status-{{ item.order.status|lower }}">{{ item.order.status }}</span>
+                  {% endif %}
+                      </td>
+
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="padding: 50px; text-align: center; color: #999;">
+                        No sales records found. Keep growing! 🌸
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
