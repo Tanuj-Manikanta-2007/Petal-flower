@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'petalcart.apps.BaseConfig',
+    'accounts',
     'shop',
 ]
 

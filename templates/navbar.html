@@ -1,97 +1,20 @@
-<style>
-/* Navbar Container */
-.navbar {
-    background: #ffffff;
-    padding: 12px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 2px solid #f2e6f5;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Logo / Brand Name */
-.navbar .logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #d63384;  /* Flower pink */
-    text-decoration: none;
-}
-
-/* Nav Links Container */
-.nav-links {
-    display: flex;
-    gap: 25px;
-    align-items: center;
-}
-
-/* Individual Link Styling */
-.nav-links a {
-    color: #444;
-    text-decoration: none;
-    font-size: 1rem;
-    font-weight: 500;
-    padding: 8px 14px;
-    border-radius: 6px;
-    transition: 0.3s ease;
-}
-
-/* Hover effect */
-.nav-links a:hover {
-    background-color: #f8e9ff;
-    color: #9b2fc3;
-    transform: translateY(-2px);
-}
-
-/* Highlighted buttons (Login, Add Flower) */
-.nav-links .btn {
-    background: #d63384;
-    color: white !important;
-    border-radius: 20px;
-    padding: 8px 20px;
-}
-
-.nav-links .btn:hover {
-    background: #b82d72;
-    color: white !important;
-}
-
-/* Responsive for mobile */
-@media (max-width: 768px) {
-    .navbar {
-        padding: 10px 20px;
-        flex-direction: column;
-        gap: 10px;
-    }
-    .nav-links {
-        gap: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-}
-</style>
-
 <nav class="navbar">
     <a href="{% url 'home' %}" class="logo">🌸 PetalCart</a>
 
     <div class="nav-links">
 
-        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'home' %}"> Home</a>
 
         {% if user.is_authenticated  %}
-            <a href="{% url 'logout' %}">Logout</a>
-            <a href = "{% url 'order_history' %}" class="btn" > Order History  </a>
-            <a href = "{% url 'cart_display' %}" class = "btn"> Cart Display </a>
+            <a href="{% url 'logout' %}"> Logout</a>
+            <a href="{% url 'order_history' %}" class="btn"> Order History</a>
+            <a href="{% url 'cart_display' %}" class="btn"> Cart</a>
         {% else %}
-            <a href="{% url 'accounts' %}" class="btn">Login / Register</a>
+            <a href="{% url 'accounts' %}" class="btn"> Login / Register</a>
         {% endif %}
 
         {% if user.is_authenticated and is_shopowner %}
-            <a href="{% url 'add_flower' %}" class="btn">+ Add Flower</a>
+            <a href="{% url 'add_flower' %}" class="btn"> Add Flower</a>
         {% endif %}
         
         

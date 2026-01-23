@@ -1,0 +1,23 @@
+{% extends "main.html" %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static "css/shop.css" %}">
+{% endblock %}
+{% block content %}
+
+<div class="flower-detail-container">
+  <div class="flower-detail-card">
+    <h1>{{ flower.flowername }}</h1>
+    <div class="flower-pic">
+      <img src="{{ flower.img.url }}" alt="{{ flower.flowername }}">
+    </div>
+    {% if flower.shop %}
+    <div class="shop-name">Shop: {{ flower.shop.shop_name }}</div>
+    {% endif %}
+    <div class="price-tag">₹{{ flower.price }}</div>
+    <div class="description">{{ flower.desc }}</div>
+    <div class="rating">Rating: {{ rating }}</div>
+    {% include "petalcart/home_view_comment.html" %}
+  </div>
+</div>
+{% endblock %}

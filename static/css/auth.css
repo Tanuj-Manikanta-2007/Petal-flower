@@ -1,0 +1,50 @@
+/* Auth pages specific styles with glossy background */
+
+.auth-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+              url('https://plus.unsplash.com/premium_photo-1688045582333-c8b6961773e0?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.auth-card {
+  width: 90%;
+  max-width: 400px;
+  padding: 40px;
+  text-align: center;
+}
+
+.auth-card h2 {
+  margin-bottom: 30px;
+  color: white;
+  font-size: 2rem;
+}
+
+.auth-card p {
+  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.auth-links {
+  margin-top: 20px;
+}
+
+.auth-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.auth-links a:hover {
+  color: white;
+  text-decoration: underline;
+}

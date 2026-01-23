@@ -1,29 +1,9 @@
 {% extends 'main.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+{% endblock %}
 {% block content %}
-<style>
-  .order-container { max-width: 900px; margin: 20px auto; padding: 15px; }
-  .order-card { 
-      border: 1px solid #ddd; border-radius: 12px; margin-bottom: 25px; 
-      background: #fff; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-  }
-  .order-header { 
-      background: #f8f9fa; padding: 15px 20px; border-bottom: 1px solid #eee;
-      display: flex; justify-content: space-between; align-items: center;
-  }
-  .status-badge { 
-      padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;
-      text-transform: uppercase;
-  }
-  .status-pending { background: #fff3cd; color: #856404; }
-  .status-completed { background: #d4edda; color: #155724; }
-  
-  .item-row { 
-      display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f1f1f1; 
-  }
-  .item-pic { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-right: 20px; }
-  .item-info { flex-grow: 1; }
-  .item-total { font-weight: bold; color: #2c3e50; }
-</style>
 
 <div class="order-container">
   <h2>Your Order History</h2>
@@ -33,7 +13,7 @@
       <div class="order-header">
         <div>
           <strong>Order ID:</strong> #{{ order.order_id|stringformat:".8s" }}...<br>
-          <small class="text-muted">Placed on: {{ order.created|date:"d M Y" }}</small>
+          <small>Placed on: {{ order.created|date:"d M Y" }}</small>
         </div>
         <div class="text-right">
           <span class="status-badge status-{{ order.status|lower }}">{{ order.status }}</span><br>
@@ -43,14 +23,16 @@
 
       <!-- Loop through items for THIS specific order -->
       {% for item in order.orderitem_set.all %}
-      <div class="item-row">
-        <img src="{{ item.flower.img.url }}" class="item-pic" alt="{{ item.flower.flowername }}">
-        <div class="item-info">
-          <h5 style="margin:0;">{{ item.flower.flowername }}</h5>
-          <p class="text-muted" style="margin:0;">Qty: {{ item.quantity }} × ₹{{ item.price }}</p>
+      <div class="order-item">
+        <div class="item-image">
+          <img src="{{ item.flower.img.url }}" alt="{{ item.flower.flowername }}">
+        </div>
+        <div class="item-details">
+          <h5>{{ item.flower.flowername }}</h5>
+          <p>Qty: {{ item.quantity }} × ₹{{ item.price }}</p>
         </div>
         <div class="item-total">
-          ₹{{ item.price }}  <!-- This matches your OrderItem logic -->
+          ₹{{ item.price }}
         </div>
       </div>
       {% endfor %}

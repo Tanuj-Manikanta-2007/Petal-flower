@@ -1,138 +1,60 @@
 {% extends 'main.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
 {% block content %}
 
-<style>
-
-.flower_grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 25px;
-    padding: 30px;
-    margin-top: 20px;
-}
-
-.flower_card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 18px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
-    transition: 0.3s ease;
-    border: 1px solid #f0d9ff;
-}
-
-.flower_card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-    border-color: #d63384;
-}
-
-.flower_card h1 {
-    font-size: 1.4rem;
-    color: #d63384;
-    margin-bottom: 10px;
-    text-align: center;
-    font-weight: 600;
-}
-
-.flower_pic {
-    width: 100%;
-    height: 230px;
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8eaff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.flower_pic img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.flower_card h6 {
-    margin-top: 10px;
-    color: #6c4f7d;
-    font-size: 0.9rem;
-    text-align: center;
-}
-
-.flower_card p {
-    font-size: 0.95rem;
-    line-height: 1.4;
-    color: #555;
-}
-
-.price {
-    font-size: 1.2rem;
-    color: #28a745;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.stock {
-    margin-top: 10px;
-    font-weight: 600;
-    color: #6c4f7d;
-}
-
-.flower_card a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.flower_card a:hover {
-    color: #b12a6b;
-}
-
-</style>
-
 <div class="flower_grid">
-
-{% for flower in flowers %}
-<div class="flower_card">
-
-    <a href="{% url 'shop' flower.flower_id %}">
-        <h1>{{ flower.flowername }}</h1>
+  {% for flower in flowers %}
+  <div class="flower_card">
+    <!-- URL: add_flower_stock (Matched to your original) -->
+    <a href="{% url 'add_flower_stock' flower.shop.shop_id flower.flower_id %}" class="stock_tag">
+      In Stock: {{flower.stock.quantity}}
     </a>
 
+    {% if request.user == flower.shop.owner %}
+    <div class="admin_links">
+      <a href="{% url 'update_flower' flower.flower_id %}" class="admin_btn">Edit</a>
+      <a href="{% url 'delete_flower' flower.flower_id %}" class="admin_btn" style="color: red;">X</a>
+    </div>
+    {% endif %}
+    
     <div class="flower_pic">
-        <img src="{{ flower.img.url }}" alt="{{ flower.flowername }}">
+      <img src="{{flower.img.url}}" alt="{{flower.flowername}}">
     </div>
 
-    {% if flower.shop %}
-    <h6>Sold by: {{ flower.shop.shop_name }}</h6>
-    {% endif %}
+    <div class="card_info_overlay">
+      
+      <a href="{% url 'shop' flower.flower_id %}" class="flower_title">{{flower.flowername}}</a>
+      <span class="price_tag">₹{{flower.price}}</span>
+      
+      <div class="action_bar">
+       
+        <form action="{% url 'process_purchase' flower.flower_id %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" name="action" value="add_to_cart" class="btn_circle" title="Add to Cart">+</button>
+        </form>
 
-    <p class="price">₹{{ flower.price }}</p>
+       
+        <form action="{% url 'process_purchase' flower.flower_id %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" name="action" value="buy_now" class="btn_circle" title="Buy Now" style="background: var(--accent); color: white;">➔</button>
+        </form>
+      </div>
 
-    <p>{{ flower.desc|truncatewords:20 }}</p>
-
-    {% include 'petalcart/home_view_comment.html' %}
-
-    <p class="stock">In Stock: {{ flower.stock.quantity }}</p>
-
-    <form method = "POST" action = "{% url 'process_purchase' flower.flower_id %}">
-        {% csrf_token %}
-
-        <input type = "number"  name = "quantity" value = "1" min = "1"
-         max = "{{flower.stock.quantity}}" class = "qty-input">
-        <button type = "submit" name = "action"  value = "add_to_cart" class = "btn btn-secondary">
-            Add to Cart
-        </button>
-        <button type = "Submit" name = "action" value = "buy_now" class = "btn btn-primary">
-            Buy now
-        </button>
-
-    </form>
-
+      <div style="margin-top: 10px;">
+        {% include 'shop/view_comment.html' %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
-{% endfor %}
-
-</div>
-
 {% endblock %}
+
+
 
 <!-- <div class = "flower_grid">
 {% for flower in flowers %}

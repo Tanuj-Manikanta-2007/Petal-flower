@@ -7,10 +7,10 @@
         {% endfor %}
     </ul>
 {% endif %}
-<div>
-  <form method = "POST" >
+<div class="glass-card" style="max-width: 600px; margin: 40px auto; padding: 30px;">
+  <form method="POST">
     {% csrf_token %}
-    {{form.as_p}}
-    <input type = "submit" value = "Submit">
+    {{ form.as_p }}
+    <button type="submit" class="btn">Submit</button>
   </form>
 </div>
