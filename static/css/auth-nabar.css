@@ -1,0 +1,15 @@
+/* Navbar override only on auth pages */
+.no-blur-navbar .navbar {
+  background: rgba(15, 15, 15, 0.75) !important;
+  backdrop-filter: blur(15px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+}
+
+.no-blur-navbar .navbar a {
+  color: #f3f3f3 !important;
+  font-weight: 500;
+}

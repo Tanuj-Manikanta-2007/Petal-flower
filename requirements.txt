@@ -1,0 +1,5 @@
+Django==5.2.8
+pillow
+razorpay
+psycopg2-binary
+python-decouple

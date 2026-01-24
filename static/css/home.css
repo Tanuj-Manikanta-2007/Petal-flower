@@ -53,11 +53,13 @@
   bottom: 20px;
   left: 20px;
   right: 20px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(8px);
   padding: 20px;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .flower_title {
@@ -76,6 +78,13 @@
 .flower_price {
   font-size: 1.2rem;
   color: var(--accent);
+  font-weight: bold;
+  margin: 0 0 10px 0;
+}
+
+.price_tag {
+  font-size: 1.2rem;
+  color: white;
   font-weight: bold;
   margin: 0 0 10px 0;
 }
@@ -99,4 +108,26 @@
 .btn-primary:hover {
   background: #c76b83;
   transform: translateY(-2px);
+}
+
+.stock_tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--accent);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+.stock_tag.no_stock {
+  background: red;
+  color: white;
+}
+
+.stock_tag.in_stock {
+  background: var(--accent);
+  color: white;
 }

@@ -1,50 +1,124 @@
-/* Auth pages specific styles with glossy background */
-
-.auth-page {
+.auth-bg {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-              url('https://plus.unsplash.com/premium_photo-1688045582333-c8b6961773e0?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-  background-size: cover;
-  background-position: center;
+  inset: 0;
+  background: linear-gradient(
+      rgba(0, 0, 0, 0.30),
+      rgba(0, 0, 0, 0.30)
+    ),
+    url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1200&q=80")
+      center/cover no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1;
+  padding-top: 80px;
 }
 
 .auth-card {
   width: 90%;
-  max-width: 400px;
-  padding: 40px;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 25px;
+  padding: 45px;
   text-align: center;
+  color: white;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.9s ease;
 }
 
 .auth-card h2 {
-  margin-bottom: 30px;
+  font-size: 2.3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
   color: white;
-  font-size: 2rem;
 }
 
-.auth-card p {
+.subtitle {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  text-align: left;
   margin-bottom: 20px;
-  color: rgba(255, 255, 255, 0.8);
+}
+
+.form-group label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 5px;
+  display: block;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 1rem;
+  color: white;
+}
+
+.form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-main {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #ff5fa0, #ff8f5c);
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.btn-main:hover {
+  transform: scale(1.03);
 }
 
 .auth-links {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .auth-links a {
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  margin: 0 10px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+  text-decoration: underline;
 }
 
 .auth-links a:hover {
   color: white;
-  text-decoration: underline;
+}
+
+.auth-error {
+  background: rgba(255, 105, 105, 0.15);
+  border-left: 3px solid #ff5c5c;
+  padding: 8px;
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+.navbar {
+  background: rgba(0, 0, 0, 0.40);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.navbar a {
+  color: white;
+  font-weight: 500;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }

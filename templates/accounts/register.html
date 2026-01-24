@@ -1,24 +1,112 @@
 {% extends 'main.html' %}
-{% load static %}
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/auth.css' %}">
-{% endblock %}
 {% block content %}
 
-<div class="auth-page">
-  <div class="glass-card auth-card">
-    <h2>Join PetalCart</h2>
-    <p>Create your account to start your journey</p>
+<style>
+  :root {
+    --primary: #2e7d32;
+    --bg: #f4f7f6;
+  }
+
+  body { background: var(--bg); }
+
+  .login-container {
+    min-height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    animation: fadeIn .4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity:0; transform: translateY(20px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  h1 {
+    text-align: center;
+    color: var(--primary);
+    margin-bottom: 20px;
+  }
+
+  .alert {
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .alert.error { background: #fdecea; color: #c62828; }
+  .alert.success { background: #e8f5e9; color: #2e7d32; }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    outline: none;
+  }
+
+  input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(46,125,50,0.15);
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    font-size: 16px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  .login-btn:hover {
+    background: #256628;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 15px;
+  }
+
+  .footer a { font-weight: bold; color: var(--primary); }
+</style>
+
+<div class="login-container">
+  <div class="login-card">
+
+    <h1>Join PetalCart</h1>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
 
     <form method="POST">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit" class="btn">Register Account</button>
+      <button class="login-btn">Register</button>
     </form>
 
-    <div class="auth-links">
-      <p>Already a member? <a href="{% url 'login_account' %}">Sign in here</a></p>
+    <div class="footer">
+      <p>Already have an account? <a href="{% url 'login_account' %}">Login</a></p>
     </div>
+
   </div>
 </div>
+
 {% endblock %}

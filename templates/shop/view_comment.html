@@ -22,7 +22,7 @@
 }
 </style>
 <h4>Comments: <a href = "{% url 'create_comment' flower.flower_id %}" >Add Comment</a></h4> 
-  {% for comment in flower.comments.all %}
+  {% for comment in flower.comments.all|slice:":1" %}
     <div>
       <h5>{{ comment.flower.flowername }}</h5>
       <small> {{ comment.user.username }} . {{ comment.created | timesince }} ago </small>
