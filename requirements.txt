@@ -3,3 +3,4 @@ pillow
 razorpay
 psycopg2-binary
 python-decouple
+gunicorn==24.1.1
