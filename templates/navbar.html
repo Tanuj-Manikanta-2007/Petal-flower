@@ -11,6 +11,7 @@
             <a href="{% url 'cart_display' %}" class="btn"> Cart</a>
         {% else %}
             <a href="{% url 'accounts' %}" class="btn"> Login / Register</a>
+            <a href = "{% url 'about_us' %}"> About Us </a>
         {% endif %}
 
         {% if user.is_authenticated and is_shopowner %}

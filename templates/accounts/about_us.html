@@ -1,0 +1,148 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+ /* Container and General Layout */
+.about-page {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    line-height: 1.6;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.about-hero {
+    text-align: center;
+    padding: 60px 0;
+    background: #f9f9f9;
+    border-radius: 15px;
+    margin-bottom: 50px;
+}
+
+.about-hero h1 { font-size: 2.5rem; color: #2c3e50; }
+.mission-statement { font-size: 1.2rem; max-width: 800px; margin: 20px auto; color: #7f8c8d; }
+
+/* Team Lead Section (Horizontal Layout) */
+.lead-section {
+    margin-bottom: 60px;
+}
+
+.lead-card {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    overflow: hidden;
+    gap: 30px;
+}
+
+.lead-card img {
+    width: 40%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.lead-text { padding: 40px; }
+
+/* Grid for other members */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.member-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    text-align: center;
+    overflow: hidden;
+}
+
+.member-card:hover { transform: translateY(-10px); }
+
+.member-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.card-content { padding: 25px; }
+.role { display: block; color: #3498db; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; font-size: 0.9rem; }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .lead-card { flex-direction: column; }
+    .lead-card img { width: 100%; }
+}
+ 
+</style>
+<div class="about-page">
+    <!-- Header Section -->
+    <header class="about-hero">
+        <h1>Connecting Shops & Customers</h1>
+        <p class="mission-statement">
+            PetalCart is more than just a marketplace; it is a bridge built on trust and technology. 
+            We empower local shops to reach their community through a seamless digital experience.
+        </p>
+    </header>
+
+    <!-- Team Lead Section -->
+    <section class="lead-section">
+        <div class="lead-card">
+            <img src="{{ MEDIA_URL }}pics/abhi_chan.jpeg" alt="Abhi - Team Lead">
+            <div class="lead-text">
+                <h3>Our Visionary Leader</h3>
+                <h2>Abhi</h2>
+                <p>
+                    Known for his unwavering leadership and maturity, Abhi is the "anchor" of PetalCart. 
+                    His ability to make critical decisions under pressure and his pearls of wisdom guide our team 
+                    through every challenge. Under his leadership, we don't just build software; we solve real-world problems.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Team Grid -->
+    <section class="team-grid">
+        <div class = "member-card">
+                <img src="{{ MEDIA_URL }}pics/trio.jpg" alt="The Team">
+                 <div class="card-content">
+                    <h4>The Team</h4>
+                    <span class="role">Our Collective Spirit</span>
+                    <p>A glimpse of the synergy that drives PetalCart forward every single day.</p>
+                 </div>
+        </div>
+        <div class="member-card">
+            <img src="{{ MEDIA_URL }}pics/tanuj.jpeg" alt="P.G. Tanuj Manikanta">
+            <div class="card-content">
+                <h4>P.G. Tanuj Manikanta</h4>
+                <span class="role">Lead Developer</span>
+                <p>The technical powerhouse behind PetalCart. Tanuj single-handedly architected the core backend, mastering complex CRUD operations and database management with relentless daily dedication.</p>
+            </div>
+        </div>
+
+        <div class="member-card">
+            <img src="{{ MEDIA_URL }}pics/shivaji.jpeg" alt="Shivaji">
+            <div class="card-content">
+                <h4>Shivaji (Shiva)</h4>
+                <span class="role">Business Analyst</span>
+                <p>A true "tofaan" of energy. Shivaji identifies the problems others miss. As our lead analyst, he translates complex market needs into actionable business strategies with a natural leadership flair.</p>
+            </div>
+        </div>
+
+        <div class="member-card">
+            <img src = "{{ MEDIA_URL }}pics/navadeep.jpeg" alt = "Navadeep">
+            <div class="card-content">
+                <h4>Mr. Ch Navadeep</h4>
+                <span class="role">Lead Designer & Liaison</span>
+                <p>The creative bridge of our team. Navadeep ensures the vision from our lead, the logic from our developer, and the strategy from our analyst blend into a beautiful, user-friendly interface.</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+

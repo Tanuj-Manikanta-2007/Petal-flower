@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from .forms import RegisterForm
 from django.contrib import auth,messages
 from django.contrib.auth import authenticate,login as auth_login
+from django.conf import settings
+
 def login_account(request):
   if request.method == 'POST':
     username = request.POST['username']
@@ -36,3 +38,6 @@ def accounts(request):
 def logout_account(request):
   auth.logout(request)
   return redirect("/")
+
+def about_us(request):
+  return render(request,"accounts/about_us.html" , {"MEDIA_URL" : settings.MEDIA_URL})
