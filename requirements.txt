@@ -7,3 +7,5 @@ python-decouple
 pillow
 razorpay
 python-dotenv
+django-storages
+boto3
