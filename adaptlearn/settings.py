@@ -33,6 +33,16 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = ["*"]
 
 
+# CSRF settings for production
+CSRF_TRUSTED_ORIGINS = [
+    'https://your-render-app.onrender.com',  # Replace with your actual Render URL
+]
+
+# For HTTPS
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+
 # Application definition
 
 INSTALLED_APPS = [
