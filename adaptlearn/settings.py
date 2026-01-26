@@ -12,43 +12,39 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url 
+import dj_database_url
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv()   # Load .env for LOCAL development
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-PETAL_CART_DIR  = BASE_DIR
-SECRET_KEY = os.environ.get("SECRET_KEY","TANUJ_KEY")
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+PETAL_CART_DIR = BASE_DIR
 
 # SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get("SECRET_KEY", "TANUJ_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
+# Allowed hosts (local + render)
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    "petal-flower.onrender.com",   
+    "petal-flower.onrender.com",
 ]
-
 
 # CSRF settings for production
 CSRF_TRUSTED_ORIGINS = [
-    'https://petal-flower.onrender.com',  # Replace with your actual Render URL
+    "https://petal-flower.onrender.com",
 ]
 
-# For HTTPS
+# For HTTPS in production
 CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -56,6 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Your Apps
     'petalcart.apps.BaseConfig',
     'accounts',
     'shop',
@@ -63,7 +61,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    # WhiteNoise (exactly once)
     'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,7 +78,7 @@ ROOT_URLCONF = 'adaptlearn.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(PETAL_CART_DIR,'templates')],
+        'DIRS': [os.path.join(PETAL_CART_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,10 +94,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'adaptlearn.wsgi.application'
 
 
-
-
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# -------------------------------------------------------------
 
 if DEBUG:
     # Local PostgreSQL
@@ -106,7 +105,7 @@ if DEBUG:
         )
     }
 else:
-    # Render  PostgreSQL
+    # Render PostgreSQL
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get("DATABASE_URL"),
@@ -116,10 +115,8 @@ else:
     }
 
 
-
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
+# -------------------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -137,8 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
+# -------------------------------------------------------------
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -148,22 +144,23 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
+# Static files (CSS, JavaScript)
+# -------------------------------------------------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 
+# WhiteNoise static storage (production)
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+
+# Media files (Uploaded Images)
+# -------------------------------------------------------------
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
-# Static files storage for production
-if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
