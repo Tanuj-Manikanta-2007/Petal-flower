@@ -6,3 +6,4 @@ dj-database-url
 python-decouple
 pillow
 razorpay
+python-dotenv
