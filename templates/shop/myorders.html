@@ -78,7 +78,7 @@
                     <td style="font-family: monospace; color: #888;">#{{ item.order.order_id|stringformat:".8s" }}</td>
                     <td>
                         <div class="prod-info">
-                            <img src="{{ item.flower.img.url }}" class="prod-img">
+                            <img src="{% static item.flower.img %}" class="prod-img">
                             <span>{{ item.flower.flowername }}</span>
                         </div>
                     </td>

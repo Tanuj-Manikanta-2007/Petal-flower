@@ -27,7 +27,7 @@
     {% endif %}
     
     <div class="flower_pic">
-      <img src="{{flower.img.url}}" alt="{{flower.flowername}}">
+      <img src="{% static flower.img %}" alt="{{flower.flowername}}">
     </div>
 
     <div class="card_info_overlay">
@@ -66,7 +66,7 @@
 {% for flower in flowers %}
 <div class = "flower_card">
   <a href =  "{% url 'shop' flower.flower_id %}"><h1> {{flower.flowername}}</h1></a>
-  <div class = "flower_pic"> <img src="{{flower.img.url}}" alt="{{flower.flowername}}"></div>
+  <div class = "flower_pic"> <img src="{% static flower.img %}" alt="{{flower.flowername}}"></div>
   {% if flower.shop %}
   <h6>Shop: {{flower.shop.shop_name}}</h6>
   

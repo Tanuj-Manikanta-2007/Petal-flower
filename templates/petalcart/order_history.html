@@ -25,7 +25,7 @@
       {% for item in order.orderitem_set.all %}
       <div class="order-item">
         <div class="item-image">
-          <img src="{{ item.flower.img.url }}" alt="{{ item.flower.flowername }}">
+          <img src="{% static item.flower.img %}" alt="{{ item.flower.flowername }}">
         </div>
         <div class="item-details">
           <h5>{{ item.flower.flowername }}</h5>

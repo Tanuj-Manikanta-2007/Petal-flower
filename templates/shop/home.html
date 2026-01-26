@@ -42,7 +42,7 @@
   {% if request.user == flower.shop.owner %}
   <a href = "{% url 'update_flower' flower.flower_id %}"> Edit </a>
   {% endif %}
-  <div class = "flower_pic"> <img src="{{flower.img.url}}" alt="{{flower.flowername}}"></div>
+  <div class = "flower_pic"> <img src="{% static flower.img %}" alt="{{flower.flowername}}"></div>
   {% if flower.shop %}
   <h6>Shop: {{flower.shop.shop_name}}</h6>
   

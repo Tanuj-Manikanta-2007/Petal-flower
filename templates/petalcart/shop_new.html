@@ -9,7 +9,7 @@
   <div class="flower-detail-card">
     <h1>{{ flower.flowername }}</h1>
     <div class="flower-pic">
-      <img src="{{ flower.img.url }}" alt="{{ flower.flowername }}">
+      <img src="{% static flower.img %}" alt="{{ flower.flowername }}">
     </div>
     {% if flower.shop %}
     <div class="shop-name">Shop: {{ flower.shop.shop_name }}</div>
