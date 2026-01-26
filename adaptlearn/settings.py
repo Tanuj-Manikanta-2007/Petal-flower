@@ -30,17 +30,21 @@ SECRET_KEY = os.environ.get("SECRET_KEY","TANUJ_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "petal-flower.onrender.com",   
+]
 
 
 # CSRF settings for production
 CSRF_TRUSTED_ORIGINS = [
-    'https://your-render-app.onrender.com',  # Replace with your actual Render URL
+    'https://petal-flower.onrender.com',  # Replace with your actual Render URL
 ]
 
 # For HTTPS
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
 
 
 # Application definition
@@ -87,7 +91,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'adaptlearn.wsgi.application'
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+
 
 
 
@@ -156,9 +160,10 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 # Static files storage for production
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
