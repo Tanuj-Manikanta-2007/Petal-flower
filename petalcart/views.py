@@ -5,7 +5,11 @@ from django.db.models import Avg
 from shop.models import Stock
 from django.contrib import messages
 from django.db import transaction
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required 
+import razorpay,json
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 
@@ -60,7 +64,8 @@ def create_comment(request,pk):
       comment.save()
       return redirect('home')
   return render(request,"form.html",{"form" : form})
-@login_required(login_url= 'accounts/')
+
+@login_required(login_url='login_account')
 def update_comment(request,pk):
   comment = get_object_or_404(Comment,comment_id = pk)
   if request.method == "POST":
@@ -71,7 +76,8 @@ def update_comment(request,pk):
   else:
     form = CommentForm(instance = comment)
     return render(request,"form.html",{"form" : form})
-@login_required(login_url= 'accounts/')
+  
+@login_required(login_url='login_account')
 def delete_comment(request, pk):
     comment = get_object_or_404(Comment, comment_id=pk)
     if request.user == comment.user:
@@ -80,7 +86,8 @@ def delete_comment(request, pk):
     else:
         # Handle unauthorized access, e.g., redirect or show error
         return redirect('home')
-@login_required(login_url = 'accounts/')
+    
+@login_required(login_url='login_account')
 def process_purchase(request,pk):
    if request.method != "POST":
       return render("home")
@@ -142,6 +149,7 @@ def user_order_history(request):
    orders = Order.objects.filter(user = request.user)
    return render(request,"petalcart/order_history.html", {"orders" : orders})
 
+@login_required(login_url='/accounts/login/')
 def cart_display(request):
    cart, created = Cart.objects.get_or_create(user = request.user)
    items = cart.items.all()
@@ -150,34 +158,50 @@ def cart_display(request):
    total_price = sum(item.subtotal for item in items)
    return render(request,"petalcart/cart_display.html", {"items" : items, "total_price" : total_price})
 
+@login_required(login_url='/accounts/login/')
 def checkout_cart(request):
    if request.method != 'POST' :
       return redirect('cart_view')
+   if not settings.RAZORPAY_KEY_ID or not settings.RAZORPAY_KEY_SECRET:
+      messages.error(request, "Razorpay keys are not configured. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET.")
+      return redirect('cart_display')
    cart = get_object_or_404(Cart,user = request.user)
    cart_items = cart.items.all()
    if not cart_items :
       messages.error(request,"Your cart is empy ...")
       return redirect('cart_display')
-   with transaction.atomic():
-      total = sum(item.flower.price * item.quantity for item in cart_items )
-      order = Order.objects.create(
-         user = request.user,
-         total = total,
-         status = "Pending"
-      )
+   
+   total = sum(item.flower.price * item.quantity for item in cart_items )
+   order = Order.objects.create(
+      user = request.user,
+      total = total,
+      status = "Pending"
+   )
 
-      for item in cart_items:
-          OrderItem.objects.create(
-            order= order,
-            flower = item.flower,
-            quantity = item.quantity,
-            price = item.flower.price
-          )
+   for item in cart_items:
+         OrderItem.objects.create(
+         order= order,
+         flower = item.flower,
+         quantity = item.quantity,
+         price = item.flower.price
+         )
 
-          item.flower.stock.quantity -= item.quantity
-          item.flower.stock.save()
-      cart_items.delete()
-   return redirect('order_history')
+   client = razorpay.Client(
+      auth = (settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET)
+   )
+   payment = client.order.create({
+      "amount" : int(total * 10 ),
+      "currency" : "INR",
+      "payment_capture" : 1
+   })
+   order.save()
+   context = {
+      "order" : order,
+      "payment" : payment,
+       "razorpay_key" : settings.RAZORPAY_KEY_ID,
+       "cart_items" : cart_items
+   }
+   return render(request,"payment.html",context)
 
 def delete_cart(request, pk):
     cart_item = get_object_or_404(CartItem, id=pk, cart__user=request.user)
@@ -207,3 +231,20 @@ def update_cart(request,pk):
          cart_item.save()
          messages.success(request,"Cart updated . ")
    return redirect('cart_display')
+
+@csrf_exempt
+def payment_sucess(request):
+   data = json.loads(request.body)
+
+   order = Order.objects.get(
+      razorpay_order_id = data['razorpay_order_id']
+   )
+
+   order.razorpay_payment_id  = data['razorpay_payment_id']
+   order.status = "Paid"
+   order.save()
+
+   cart = Cart.objects.get(user = order.user)
+   cart.item.all().delete()
+
+   return JsonResponse({"status" : "ok" })

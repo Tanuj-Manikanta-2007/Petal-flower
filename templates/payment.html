@@ -1,0 +1,204 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+<link rel="stylesheet" href="{% static 'css/payment.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    
+    <!-- Payment Header -->
+    <div class="payment-header">
+        <h1>Order Summary & Payment</h1>
+        <p class="subtitle">Complete your purchase securely</p>
+    </div>
+
+    <!-- Main Payment Section -->
+    <div class="payment-wrapper">
+        
+        <!-- Order Details -->
+        <div class="order-summary">
+            <div class="summary-card glass-card">
+                <h2>Order Details</h2>
+                <div class="order-info">
+                    <div class="info-row">
+                        <span class="label">Order ID:</span>
+                        <span class="value">#{{ payment.id }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Order Amount:</span>
+                        <span class="amount">{% widthratio payment.amount 100 1 %}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Payment Status:</span>
+                        <span class="status pending">
+                            <span class="status-dot"></span>
+                            Awaiting Payment
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Payment Method:</span>
+                        <span class="value">Credit/Debit Card or UPI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Form Section -->
+        <div class="payment-form-section">
+            <div class="form-card glass-card">
+                <h2>Billing Information</h2>
+                
+                <form class="billing-form" method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                class="form-control" 
+                                placeholder="Enter your full name"
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-control" 
+                                placeholder="your.email@example.com"
+                                value="{{ user.email }}"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Contact Number</label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone" 
+                                class="form-control" 
+                                placeholder="+91 XXXXX XXXXX"
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Delivery Address</label>
+                            <textarea 
+                                id="address" 
+                                name="address" 
+                                class="form-control" 
+                                placeholder="Street address, City, State, Pincode"
+                                rows="2"
+                                required
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Security Notice -->
+                    <div class="security-notice">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <p>Your payment information is encrypted and secure. PetalCart uses industry-standard security protocols.</p>
+                    </div>
+
+                </form>
+
+                <!-- Payment Button Section -->
+                <div class="payment-button-container">
+                    <button id="pay-btn" class="btn btn-primary btn-large">
+                        <span class="btn-icon">🔒</span>
+                        Pay Securely with Razorpay
+                        <span class="btn-amount">₹ {% widthratio payment.amount 100 1 %}</span>
+                    </button>
+                    
+                    <p class="payment-methods-info">
+                        We accept: Credit Card • Debit Card • UPI • NetBanking • Wallets
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Razorpay Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ payment.amount }}",
+            "currency": "INR",
+            "name": "PetalCart 🌸",
+            "description": "Thank you for your flower order!",
+            "order_id": "{{ payment.id }}",
+            "image": "{% static 'pics/logo.png' %}",
+            "prefill": {
+                "name": "{{ user.get_full_name|default:user.username }}",
+                "email": "{{ user.email }}",
+                "contact": document.getElementById('phone').value || ""
+            },
+            "theme": {
+                "color": "#d88195"
+            },
+            "handler": function (response) {
+                // Show loading state
+                const payBtn = document.getElementById('pay-btn');
+                payBtn.disabled = true;
+                payBtn.innerHTML = '<span class="spinner"></span> Processing...';
+
+                // Send payment details to server
+                fetch("/payment-success/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                }).then(res => {
+                    if (res.ok) {
+                        window.location.href = "/order_history/";
+                    } else {
+                        payBtn.disabled = false;
+                        payBtn.innerHTML = '<span class="btn-icon">🔒</span> Pay Securely with Razorpay <span class="btn-amount">₹{{ payment.amount }}</span>';
+                        alert('Payment verification failed. Please try again.');
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                    payBtn.disabled = false;
+                    payBtn.innerHTML = '<span class="btn-icon">🔒</span> Pay Securely with Razorpay <span class="btn-amount">₹{{ payment.amount }}</span>';
+                    alert('An error occurred. Please try again.');
+                });
+            },
+            "modal": {
+                "ondismiss": function() {
+                    console.log('Payment window closed');
+                }
+            }
+        };
+
+        var rzp = new Razorpay(options);
+        
+        document.getElementById('pay-btn').onclick = function(e){
+            e.preventDefault();
+            rzp.open();
+        }
+    </script>
+
+</div>
+{% endblock %}

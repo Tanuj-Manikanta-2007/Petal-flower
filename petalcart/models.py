@@ -62,13 +62,17 @@ class Order(models.Model):
         ('Accepted', 'Accepted'),    
         ('Shipped', 'Shipped'),      
         ('Delivered', 'Delivered'),  
-        ('Cancelled', 'Cancelled'),  
+        ('Cancelled', 'Cancelled'),
+        ('Paid','Paid')  
     ]
    order_id = models.UUIDField(primary_key = True,default = uuid.uuid4,editable = False)
    user = models.ForeignKey(User,on_delete = models.CASCADE)
    total = models.DecimalField(max_digits= 10,decimal_places= 2)
    status = models.CharField(max_length= 20,default = "Pending")
    created = models.DateTimeField(auto_now_add = True)
+
+   razorpay_order_id = models.CharField(max_length = 200, blank = True,null = True)
+   razorpay_payment_id = models.CharField(max_length = 200, blank = True,null = True)
 
 class OrderItem(models.Model):
    order = models.ForeignKey(Order, on_delete = models.CASCADE)
