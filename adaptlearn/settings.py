@@ -1,12 +1,11 @@
 """
-Django settings for adaptlearn project.
-Works for BOTH Localhost and Render Deployment
+Django settings for adaptlearn project
+RENDER DEPLOYMENT ONLY
 """
 
 from pathlib import Path
 import os
 import dj_database_url
-from dotenv import load_dotenv
 
 # ---------------------------------------
 # BASE DIR
@@ -15,23 +14,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 PETAL_CART_DIR = BASE_DIR
 
 # ---------------------------------------
-# ENV FILE
-# ---------------------------------------
-load_dotenv(BASE_DIR / ".env")
-
-# ---------------------------------------
-# ENVIRONMENT CHECK
-# ---------------------------------------
-RENDER = os.environ.get("RENDER", False)
-
-# ---------------------------------------
 # SECURITY
 # ---------------------------------------
-SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-later")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = os.environ.get("DEBUG", "True") == "True"
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"] if DEBUG else [
+ALLOWED_HOSTS = [
     ".onrender.com",
 ]
 
@@ -90,28 +79,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'adaptlearn.wsgi.application'
 
 # ---------------------------------------
-# DATABASE
+# DATABASE (RENDER POSTGRESQL)
 # ---------------------------------------
-if RENDER:
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get("DATABASE_URL"),
-            conn_max_age=600,
-            ssl_require=True,
-        )
-    }
-else:
-    # LOCAL POSTGRESQL
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME', 'petalcart'),
-            'USER': os.environ.get('DB_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', '1590'),
-            'HOST': os.environ.get('DB_HOST', 'localhost'),
-            'PORT': os.environ.get('DB_PORT', '5432'),
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True,
+    )
+}
 
 # ---------------------------------------
 # PASSWORD VALIDATION
@@ -132,17 +108,15 @@ USE_I18N = True
 USE_TZ = True
 
 # ---------------------------------------
-# STATIC FILES
+# STATIC FILES (RENDER + WHITENOISE)
 # ---------------------------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static']
 
-if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ---------------------------------------
-# MEDIA FILES
+# MEDIA FILES (TEMP STORAGE)
 # ---------------------------------------
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -157,5 +131,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ---------------------------------------
 LOGIN_URL = '/accounts/login/'
 
+# ---------------------------------------
+# RAZORPAY ENV
+# ---------------------------------------
 RAZORPAY_KEY_ID = (os.environ.get("RAZORPAY_KEY_ID") or "").strip()
 RAZORPAY_KEY_SECRET = (os.environ.get("RAZORPAY_KEY_SECRET") or "").strip()
