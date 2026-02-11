@@ -9,6 +9,20 @@
 {% block content %}
 <div class="payment-container">
     
+    <!-- Pre-Release Alert Message -->
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="background-color: #f8d7da; border: 2px solid #f5514d; border-radius: 8px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(245, 81, 77, 0.2);">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span style="font-size: 28px;">🚀</span>
+            <div>
+                <h4 style="margin: 0 0 8px 0; color: #721c24; font-weight: 600; font-size: 18px;">Still in Development - Early Supporter Pricing</h4>
+                <p style="margin: 0; color: #721c24; line-height: 1.6;">
+                    This product is in active development. As an early supporter, <strong>you only pay 10% of the regular price</strong>! 
+                    Your support helps us build this amazing product. After launch, regular pricing will apply. Thank you! ✨
+                </p>
+            </div>
+        </div>
+    </div>
+    
     <!-- Payment Header -->
     <div class="payment-header">
         <h1>Order Summary & Payment</h1>
@@ -28,8 +42,12 @@
                         <span class="value">#{{ payment.id }}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">Order Amount:</span>
-                        <span class="amount">{% widthratio payment.amount 100 1 %}</span>
+                        <span class="label">Regular Price:</span>
+                        <span style="text-decoration: line-through; color: #999;">₹{{ original_total|floatformat:2 }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Early Supporter Price (10%):</span>
+                        <span class="amount" style="color: #28a745; font-weight: bold;">₹{{ pay_amount|floatformat:2 }}</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Payment Status:</span>
@@ -105,6 +123,16 @@
                         </div>
                     </div>
 
+                    <!-- Support Discount Offer -->
+                    <div style="background-color: #e8f5e9; border: 1px solid #4caf50; border-radius: 6px; padding: 15px; margin: 20px 0; margin-top: 25px;">
+                        <p style="color: #2e7d32; margin: 0; font-weight: 500;">
+                            ✨ Thank you for being an early supporter! You're paying just 10% of the regular price.
+                        </p>
+                        <p style="color: #2e7d32; font-size: 0.9rem; margin: 8px 0 0 0;">
+                            After product launch, regular pricing will apply. Help us grow! 🚀
+                        </p>
+                    </div>
+
                     <!-- Security Notice -->
                     <div class="security-notice">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -118,9 +146,9 @@
                 <!-- Payment Button Section -->
                 <div class="payment-button-container">
                     <button id="pay-btn" class="btn btn-primary btn-large">
-                        <span class="btn-icon">🔒</span>
+                        <span class="btn-icon">�</span>
                         Pay Securely with Razorpay
-                        <span class="btn-amount">₹ {% widthratio payment.amount 100 1 %}</span>
+                        <span class="btn-amount">₹{{ pay_amount|floatformat:2 }}</span>
                     </button>
                     
                     <p class="payment-methods-info">
@@ -175,13 +203,13 @@
                         window.location.href = "/order_history/";
                     } else {
                         payBtn.disabled = false;
-                        payBtn.innerHTML = '<span class="btn-icon">🔒</span> Pay Securely with Razorpay <span class="btn-amount">₹{{ payment.amount }}</span>';
+                        payBtn.innerHTML = '<span class="btn-icon">�</span> Pay Securely with Razorpay <span class="btn-amount">₹{{ pay_amount|floatformat:2 }}</span>';
                         alert('Payment verification failed. Please try again.');
                     }
                 }).catch(error => {
                     console.error('Error:', error);
                     payBtn.disabled = false;
-                    payBtn.innerHTML = '<span class="btn-icon">🔒</span> Pay Securely with Razorpay <span class="btn-amount">₹{{ payment.amount }}</span>';
+                    payBtn.innerHTML = '<span class="btn-icon">🚀</span> Pay Securely with Razorpay <span class="btn-amount">₹{{ pay_amount|floatformat:2 }}</span>';
                     alert('An error occurred. Please try again.');
                 });
             },

@@ -10,6 +10,7 @@ import razorpay,json
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from decimal import Decimal, ROUND_HALF_UP
 # Create your views here.
 
 
@@ -90,7 +91,7 @@ def delete_comment(request, pk):
 @login_required(login_url='login_account')
 def process_purchase(request,pk):
    if request.method != "POST":
-      return render("home")
+      return redirect("home")
    flower = get_object_or_404(Flower,flower_id = pk)
    quantity = int(request.POST.get("quantity",1))
    action = request.POST.get("action") 
@@ -115,6 +116,7 @@ def process_purchase(request,pk):
       messages.error(request,"Unknown action.")
       return redirect("home")
    
+@login_required(login_url='login_account')
 def handle_buy_now(request,flower_id,quantity):
    flower = get_object_or_404(Flower,flower_id = flower_id)
    with transaction.atomic():
@@ -135,19 +137,39 @@ def handle_buy_now(request,flower_id,quantity):
       messages.success(request,"Order placed successfully! ")
       return redirect("home")
    
+@login_required(login_url='login_account')
 def handle_add_to_cart(request,flower_id,quantity):
   flower = get_object_or_404(Flower,flower_id = flower_id)
   cart,created = Cart.objects.get_or_create(user = request.user)
   cart_item,created = CartItem.objects.get_or_create(cart = cart,flower = flower)
-  cart_item.quantity += quantity
+  if created:
+     cart_item.quantity = quantity
+  else:
+      cart_item.quantity += quantity
+  
   cart_item.save()
 
   messages.success(request,f"{flower.flowername} added to cart")
   return redirect("cart_display")
 
 def user_order_history(request):
-   orders = Order.objects.filter(user = request.user)
-   return render(request,"petalcart/order_history.html", {"orders" : orders})
+   all_orders = Order.objects.filter(user=request.user).order_by('-created')
+   page = int(request.GET.get('page', 1))
+   items_per_page = 5
+   start_idx = (page - 1) * items_per_page
+   end_idx = start_idx + items_per_page
+   
+   orders = all_orders[start_idx:end_idx]
+   total_orders = all_orders.count()
+   total_pages = (total_orders + items_per_page - 1) // items_per_page
+   
+   return render(request, "petalcart/order_history.html", {
+       "orders": orders,
+       "page": page,
+       "total_pages": total_pages,
+       "has_next": page < total_pages,
+       "has_prev": page > 1
+   })
 
 @login_required(login_url='/accounts/login/')
 def cart_display(request):
@@ -171,7 +193,17 @@ def checkout_cart(request):
       messages.error(request,"Your cart is empy ...")
       return redirect('cart_display')
    
-   total = sum(item.flower.price * item.quantity for item in cart_items )
+   # Check if customer wants to support with development pricing
+   use_dev_pricing = request.POST.get('use_dev_pricing') == 'yes'
+   
+   original_total = sum(item.flower.price * item.quantity for item in cart_items )
+   
+   # Apply 10% payment (early supporter pricing)
+   if use_dev_pricing:
+      total = Decimal(str(original_total)) * Decimal('0.10')
+   else:
+      total = Decimal(str(original_total))
+   
    order = Order.objects.create(
       user = request.user,
       total = total,
@@ -189,8 +221,10 @@ def checkout_cart(request):
    client = razorpay.Client(
       auth = (settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET)
    )
+   # Convert to paise (multiply by 100) and convert to integer
+   amount_in_paise = int(Decimal(str(total)) * 100)
    payment = client.order.create({
-      "amount" : int(total * 10 ),
+      "amount" : amount_in_paise,
       "currency" : "INR",
       "payment_capture" : 1
    })
@@ -198,8 +232,10 @@ def checkout_cart(request):
    context = {
       "order" : order,
       "payment" : payment,
-       "razorpay_key" : settings.RAZORPAY_KEY_ID,
-       "cart_items" : cart_items
+      "razorpay_key" : settings.RAZORPAY_KEY_ID,
+      "cart_items" : cart_items,
+      "original_total" : original_total,
+      "pay_amount" : total
    }
    return render(request,"payment.html",context)
 
@@ -236,15 +272,38 @@ def update_cart(request,pk):
 def payment_sucess(request):
    data = json.loads(request.body)
 
-   order = Order.objects.get(
-      razorpay_order_id = data['razorpay_order_id']
-   )
+   try:
+      order = Order.objects.get(razorpay_order_id=data['razorpay_order_id'])
+   except Order.DoesNotExist:
+      return JsonResponse({"status": "error", "message": "Order not found"}, status=400)
 
-   order.razorpay_payment_id  = data['razorpay_payment_id']
+   order.razorpay_payment_id = data['razorpay_payment_id']
    order.status = "Paid"
-   order.save()
+   
+   with transaction.atomic():
+      # Update stock for each item in the order
+      for order_item in order.orderitem_set.all():
+         try:
+            stock = order_item.flower.stock
+            if stock.quantity >= order_item.quantity:
+               stock.quantity -= order_item.quantity
+               stock.save()
+            else:
+               return JsonResponse({
+                  "status": "error", 
+                  "message": f"Insufficient stock for {order_item.flower.flowername}"
+               }, status=400)
+         except Stock.DoesNotExist:
+            return JsonResponse({
+               "status": "error", 
+               "message": f"Stock not found for {order_item.flower.flowername}"
+            }, status=400)
+      
+      # Delete cart items
+      cart = Cart.objects.get(user=order.user)
+      cart.items.all().delete()
+      
+      # Save order status
+      order.save()
 
-   cart = Cart.objects.get(user = order.user)
-   cart.item.all().delete()
-
-   return JsonResponse({"status" : "ok" })
+   return JsonResponse({"status": "ok"})

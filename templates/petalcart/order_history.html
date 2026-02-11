@@ -2,6 +2,29 @@
 {% load static %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+<style>
+  .pagination {
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px 0;
+  }
+  .pagination a, .pagination span {
+    padding: 8px 12px;
+    margin: 0 5px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+  }
+  .pagination a:hover {
+    background-color: #e8e8e8;
+  }
+  .pagination .active {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+  }
+</style>
 {% endblock %}
 {% block content %}
 
@@ -38,6 +61,21 @@
       {% endfor %}
     </div>
     {% endfor %}
+
+    <!-- Pagination -->
+    <div class="pagination">
+      {% if has_prev %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page|add:'-1' }}">Previous</a>
+      {% endif %}
+
+      <span class="active">Page {{ page }} of {{ total_pages }}</span>
+
+      {% if has_next %}
+        <a href="?page={{ page|add:'1' }}">Next</a>
+        <a href="?page={{ total_pages }}">Last</a>
+      {% endif %}
+    </div>
   {% else %}
     <p>You haven't placed any orders yet.</p>
   {% endif %}

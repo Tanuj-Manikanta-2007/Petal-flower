@@ -79,8 +79,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'adaptlearn.wsgi.application'
 
 # ---------------------------------------
+# DATABASE (LOCAL HOST  POSTGRESQL)
+# ---------------------------------------
+
+# DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': os.environ.get('DB_NAME', 'petalcart'),
+#             'USER': os.environ.get('DB_USER', 'postgres'),
+#             'PASSWORD': os.environ.get('DB_PASSWORD', '1590'),
+#             'HOST': os.environ.get('DB_HOST', 'localhost'),
+#             'PORT': os.environ.get('DB_PORT', '5432'),
+#         }
+#     }
+
+
+# ---------------------------------------
 # DATABASE (RENDER POSTGRESQL)
 # ---------------------------------------
+
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get("DATABASE_URL"),

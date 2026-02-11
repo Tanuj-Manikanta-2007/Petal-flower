@@ -86,6 +86,27 @@
 
     <form method="POST" action="{% url 'checkout_cart' %}">
         {% csrf_token %}
+        
+        <!-- Support Discount Option -->
+        <div style="background-color: #f0f8ff; border: 1px solid #b0e0e6; border-radius: 6px; padding: 12px; margin-bottom: 15px;">
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0;">
+              <input 
+                  type="checkbox" 
+                  id="use_dev_pricing" 
+                  name="use_dev_pricing" 
+                  value="yes"
+                  checked
+                  style="width: 18px; height: 18px; cursor: pointer;"
+              >
+              <span style="color: #0066cc; font-weight: 500; margin: 0;">
+                  🚀 Early Supporter - Pay Only <strong>10%</strong> (Still in Development)
+              </span>
+          </label>
+          <p style="color: #0066cc; font-size: 0.85rem; margin: 6px 0 0 28px;">
+              Help us develop this product - Pay just 10% now! Regular price applies after launch.
+          </p>
+        </div>
+
         <button type="submit" class="btn">Proceed to Checkout</button>
     </form>
   </div>
