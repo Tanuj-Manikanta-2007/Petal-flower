@@ -163,70 +163,22 @@
 
     <!-- Razorpay Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <!-- Data attributes for JavaScript -->
     <script>
-        var options = {
-            "key": "{{ razorpay_key }}",
+        window.paymentData = {
+            "razorpay_key": "{{ razorpay_key }}",
             "amount": "{{ payment.amount }}",
-            "currency": "INR",
-            "name": "PetalCart 🌸",
-            "description": "Thank you for your flower order!",
             "order_id": "{{ payment.id }}",
-            "image": "{% static 'pics/logo.png' %}",
-            "prefill": {
-                "name": "{{ user.get_full_name|default:user.username }}",
-                "email": "{{ user.email }}",
-                "contact": document.getElementById('phone').value || ""
-            },
-            "theme": {
-                "color": "#d88195"
-            },
-            "handler": function (response) {
-                // Show loading state
-                const payBtn = document.getElementById('pay-btn');
-                payBtn.disabled = true;
-                payBtn.innerHTML = '<span class="spinner"></span> Processing...';
-
-                // Send payment details to server
-                fetch("/payment-success/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": "{{ csrf_token }}"
-                    },
-                    body: JSON.stringify({
-                        razorpay_payment_id: response.razorpay_payment_id,
-                        razorpay_order_id: response.razorpay_order_id,
-                        razorpay_signature: response.razorpay_signature
-                    })
-                }).then(res => {
-                    if (res.ok) {
-                        window.location.href = "/order_history/";
-                    } else {
-                        payBtn.disabled = false;
-                        payBtn.innerHTML = '<span class="btn-icon">�</span> Pay Securely with Razorpay <span class="btn-amount">₹{{ pay_amount|floatformat:2 }}</span>';
-                        alert('Payment verification failed. Please try again.');
-                    }
-                }).catch(error => {
-                    console.error('Error:', error);
-                    payBtn.disabled = false;
-                    payBtn.innerHTML = '<span class="btn-icon">🚀</span> Pay Securely with Razorpay <span class="btn-amount">₹{{ pay_amount|floatformat:2 }}</span>';
-                    alert('An error occurred. Please try again.');
-                });
-            },
-            "modal": {
-                "ondismiss": function() {
-                    console.log('Payment window closed');
-                }
-            }
+            "user_name": "{{ user.get_full_name|default:user.username }}",
+            "user_email": "{{ user.email }}",
+            "csrf_token": "{{ csrf_token }}",
+            "pay_amount": "{{ pay_amount|floatformat:2 }}"
         };
-
-        var rzp = new Razorpay(options);
-        
-        document.getElementById('pay-btn').onclick = function(e){
-            e.preventDefault();
-            rzp.open();
-        }
     </script>
+    
+    <!-- Payment Handler Script -->
+    <script src="{% static 'js/payment.js' %}"></script>
 
 </div>
 {% endblock %}

@@ -11,6 +11,8 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from decimal import Decimal, ROUND_HALF_UP
+import hmac
+import hashlib
 # Create your views here.
 
 
@@ -228,7 +230,11 @@ def checkout_cart(request):
       "currency" : "INR",
       "payment_capture" : 1
    })
+   
+   # IMPORTANT: Store the Razorpay order ID so we can find it later in payment_sucess
+   order.razorpay_order_id = payment['id']
    order.save()
+   
    context = {
       "order" : order,
       "payment" : payment,
@@ -270,14 +276,45 @@ def update_cart(request,pk):
 
 @csrf_exempt
 def payment_sucess(request):
-   data = json.loads(request.body)
+   try:
+      data = json.loads(request.body)
+   except json.JSONDecodeError:
+      return JsonResponse({"status": "error", "message": "Invalid JSON data"}, status=400)
+   
+   # Validate required fields
+   if 'razorpay_order_id' not in data or 'razorpay_payment_id' not in data or 'razorpay_signature' not in data:
+      return JsonResponse({"status": "error", "message": "Missing required payment data"}, status=400)
+
+   # Verify the signature - SECURITY CHECK
+   # This ensures the payment actually came from Razorpay
+   order_id = data['razorpay_order_id']
+   payment_id = data['razorpay_payment_id']
+   signature = data['razorpay_signature']
+   
+   # Create the signature that should have been sent by Razorpay
+   message = f"{order_id}|{payment_id}"
+   expected_signature = hmac.new(
+      settings.RAZORPAY_KEY_SECRET.encode(),
+      message.encode(),
+      hashlib.sha256
+   ).hexdigest()
+   
+   # Verify the signature matches
+   if signature != expected_signature:
+      return JsonResponse({
+         "status": "error", 
+         "message": "Payment verification failed - Invalid signature. Payment rejected for security."
+      }, status=400)
 
    try:
-      order = Order.objects.get(razorpay_order_id=data['razorpay_order_id'])
+      order = Order.objects.get(razorpay_order_id=order_id)
    except Order.DoesNotExist:
-      return JsonResponse({"status": "error", "message": "Order not found"}, status=400)
+      return JsonResponse({
+         "status": "error", 
+         "message": f"Order not found with ID: {order_id}"
+      }, status=400)
 
-   order.razorpay_payment_id = data['razorpay_payment_id']
+   order.razorpay_payment_id = payment_id
    order.status = "Paid"
    
    with transaction.atomic():
@@ -299,9 +336,12 @@ def payment_sucess(request):
                "message": f"Stock not found for {order_item.flower.flowername}"
             }, status=400)
       
-      # Delete cart items
-      cart = Cart.objects.get(user=order.user)
-      cart.items.all().delete()
+      # Delete cart items if cart exists
+      try:
+         cart = Cart.objects.get(user=order.user)
+         cart.items.all().delete()
+      except Cart.DoesNotExist:
+         pass  # Cart may have been deleted already
       
       # Save order status
       order.save()
