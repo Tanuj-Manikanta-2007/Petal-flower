@@ -12,29 +12,24 @@ An e-commerce platform for buying and selling fresh flowers online where users c
 
 ### 🌸 Flower Catalog
 - ➕ Add and manage flower products with images
-- 🔍 Browse and search flowers by name, shop, or category
 - 💰 View pricing and availability
 - ⭐ Rating and review system
-- 🏪 Shop-specific product listings
 - 📦 Track inventory and stock levels
 
 ### 🛒 Shopping Cart & Orders
 - 🛍️ Add flowers to shopping cart
 - 💳 Secure checkout process
 - 📋 Order history and tracking
-- 🚚 Order status management
 - 📦 Multiple items per order
-- 🎯 Order confirmation and details
 
 ### 💰 Payment System
 - 💳 Razorpay payment integration
 - 🔒 Secure payment processing
-- 📊 Payment verification and tracking
 - 🧾 Invoice generation
 - ✅ Multiple payment methods support
 
 ### 🏪 Shop Management
-- 🏢 Shop registration and profiles
+- 🏢 Shop registration 
 - 📝 Shop management dashboard
 - 👥 View shop customers
 - 📊 Monitor sales and revenue
@@ -49,11 +44,11 @@ An e-commerce platform for buying and selling fresh flowers online where users c
 
 ## 🛠️ Technologies Used
 
-- **Backend:** Django 5.2.8 🐍
-- **Database:** SQLite / PostgreSQL 💾
-- **Frontend:** HTML, CSS, JavaScript 🎨
-- **Authentication:** Django's built-in authentication system 🔒
-- **Payments:** Razorpay Integration 💳
+- **Backend:**          Django 5.2.8 🐍
+- **Database:**         PostgreSQL 💾
+- **Frontend:**         HTML, CSS, JavaScript 🎨
+- **Authentication:**   Django's built-in authentication system 🔒
+- **Payments:**         Razorpay Integration 💳
 - **Media Management:** Django media files handling 📸
 
 ## 📦 Installation
@@ -154,7 +149,6 @@ petalcart/
 ├── media/               # User uploaded files
 │   └── pics/
 ├── requirements.txt     # Python dependencies
-├── db.sqlite3          # SQLite database
 └── manage.py           # Django management script
 ```
 
@@ -166,28 +160,23 @@ petalcart/
    - Create an account or login with existing credentials
    - Navigate to `/register/` or `/login/`
 
-2. **🔍 Browse Flowers**
-   - View all available flower products on the home page
-   - Use the search bar to filter by name, shop, or category
-   - Check prices and ratings
-
-3. **🛒 Add to Cart**
+2. **🛒 Add to Cart**
    - Click "Add to Cart" on flower listings
    - View cart with selected items
    - Update quantities as needed
 
-4. **💳 Checkout & Payment**
+3. **💳 Checkout & Payment**
    - Proceed to checkout
    - Enter delivery details
    - Complete payment via Razorpay
    - Receive order confirmation
 
-5. **📦 Track Orders**
+4. **📦 Track Orders**
    - View order history in your profile
    - Monitor order status
    - Track delivery updates
 
-6. **⭐ Leave Reviews**
+5. **⭐ Leave Reviews**
    - Rate flowers and shops
    - Leave detailed reviews and comments
    - Help other buyers with feedback
@@ -311,3 +300,4 @@ For questions or support, please open an issue in the repository. 💌
 ---
 
 **Happy Shopping! 🌸💐🛍️**
+
