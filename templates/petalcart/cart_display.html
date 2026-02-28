@@ -26,12 +26,13 @@
           <p>Unit Price: ₹{{ item.flower.price }}</p>
 
           <!-- Quantity Update Form -->
-          <form method="post" action="{% url 'update_cart' item.id %}">
+          <form id="cart-form-{{ item.id }}" method="post" action="{% url 'update_cart' item.id %}">
             {% csrf_token %}
             <div class="quantity-controls">
               <button type="button" onclick="changeQuantity(-1, {{ item.id }})">-</button>
 
               <input type="number" 
+                     id="qty-{{ item.id }}"
                      name="quantity" 
                      value="{{ item.quantity }}" 
                      min="1" 
@@ -116,17 +117,31 @@
 
 <!-- JS (Optional) -->
 <script>
+function getCartQuantityInput(id) {
+  return document.getElementById(`qty-${id}`);
+}
+
+function getCartForm(id) {
+  return document.getElementById(`cart-form-${id}`);
+}
+
 function changeQuantity(amount, id) {
-    let input = document.querySelector(`input[name="quantity"]`);
-    let newVal = parseInt(input.value) + amount;
-    if (newVal >= 1) {
-        input.value = newVal;
-        input.form.submit();
-    }
+  const input = getCartQuantityInput(id);
+  const form = getCartForm(id);
+  if (!input || !form) return;
+
+  const currentVal = parseInt(input.value || '1', 10);
+  const newVal = currentVal + amount;
+  if (newVal >= 1) {
+    input.value = newVal;
+    form.submit();
+  }
 }
 
 function updateQuantity(id, val) {
-    document.querySelector(`input[name="quantity"]`).form.submit();
+  const form = getCartForm(id);
+  if (!form) return;
+  form.submit();
 }
 </script>
 

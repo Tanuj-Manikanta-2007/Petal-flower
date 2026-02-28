@@ -6,12 +6,22 @@ RENDER DEPLOYMENT ONLY
 from pathlib import Path
 import os
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 
 # ---------------------------------------
 # BASE DIR
 # ---------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 PETAL_CART_DIR = BASE_DIR
+
+# Optionally load env vars from a local .env (useful for dev).
+# Safe in production: if python-dotenv isn't installed or no .env exists, this is a no-op.
+try:
+    from dotenv import load_dotenv  # type: ignore
+
+    load_dotenv(BASE_DIR / ".env")
+except Exception:
+    pass
 
 # ---------------------------------------
 # SECURITY
@@ -95,12 +105,18 @@ WSGI_APPLICATION = 'adaptlearn.wsgi.application'
 
 
 # ---------------------------------------
-# DATABASE (RENDER POSTGRESQL)
+# DATABASE
 # ---------------------------------------
 
+# Use DATABASE_URL only (Render/Heroku style). No SQLite fallback.
+DATABASE_URL = (os.environ.get("DATABASE_URL") or "").strip()
+
+if not DATABASE_URL:
+    raise ImproperlyConfigured("DATABASE_URL environment variable is required")
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
+    'default': dj_database_url.parse(
+        DATABASE_URL,
         conn_max_age=600,
     )
 }

@@ -1,0 +1,105 @@
+:root {
+    --primary: #2563eb;
+    --text-main: #1f2937;
+    --text-muted: #4b5563;
+    --bg-card: #f9fafb;
+}
+
+.about-container {
+    max-width: 1000px;
+    margin: 100px auto;
+    padding: 0 2rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-main);
+}
+
+/* Header */
+.hero-intro {
+    border-left: 4px solid var(--primary);
+    padding-left: 1.5rem;
+    margin-bottom: 3.5rem;
+}
+
+.hero-intro h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.hero-intro p {
+    font-size: 1.15rem;
+    color: var(--primary);
+    font-weight: 600;
+    margin-top: 0.6rem;
+}
+
+/* Grid Layout */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 3.5rem;
+}
+
+/* Bio Content */
+.bio-content p {
+    font-size: 1.08rem;
+    line-height: 1.8;
+    margin-bottom: 1.6rem;
+    color: var(--text-muted);
+}
+
+/* Sidebar Cards */
+.tech-box {
+    background: var(--bg-card);
+    padding: 1.8rem;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 2rem;
+}
+
+.tech-box h3 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.tech-tag {
+    display: inline-block;
+    background: #ffffff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin: 6px 6px 0 0;
+    border: 1px solid #d1d5db;
+}
+
+/* Links */
+.cta-links {
+    margin-top: 2.2rem;
+    display: flex;
+    gap: 2rem;
+}
+
+.cta-links a {
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--text-main);
+    padding-bottom: 3px;
+    transition: 0.25s ease;
+}
+
+.cta-links a:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+@media (max-width: 850px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -23,7 +23,7 @@ def shop_register(request):
     form = ShopRegisterForm(request.POST)
     if form.is_valid():
       user = form.save()
-      shop_group = Group.objects.get(name = "ShopOwner")
+      shop_group, _created = Group.objects.get_or_create(name="ShopOwner")
       user.groups.add(shop_group)
       pcmodel.FlowerShop.objects.create(
         owner = user,

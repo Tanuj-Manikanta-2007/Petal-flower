@@ -185,7 +185,7 @@ def cart_display(request):
 @login_required(login_url='/accounts/login/')
 def checkout_cart(request):
    if request.method != 'POST' :
-      return redirect('cart_view')
+      return redirect('cart_display')
    if not settings.RAZORPAY_KEY_ID or not settings.RAZORPAY_KEY_SECRET:
       messages.error(request, "Razorpay keys are not configured. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET.")
       return redirect('cart_display')
@@ -245,16 +245,18 @@ def checkout_cart(request):
    }
    return render(request,"payment.html",context)
 
+@login_required(login_url='/accounts/login/')
 def delete_cart(request, pk):
-    cart_item = get_object_or_404(CartItem, id=pk, cart__user=request.user)
-    cart_item.delete()
-    messages.success(request, "Item removed from cart.")
-    return redirect('cart_display') 
+   cart_item = get_object_or_404(CartItem, id=pk, cart__user=request.user)
+   cart_item.delete()
+   messages.success(request, "Item removed from cart.")
+   return redirect('cart_display')
 
   
+@login_required(login_url='/accounts/login/')
 def update_cart(request,pk):
    if request.method == 'POST' :
-      cart_item = get_object_or_404(CartItem,id = pk)
+      cart_item = get_object_or_404(CartItem, id=pk, cart__user=request.user)
       try:
          new_quantity = int(request.POST.get('quantity'))
       except:
@@ -299,10 +301,10 @@ def payment_sucess(request):
       hashlib.sha256
    ).hexdigest()
    
-   # Verify the signature matches
-   if signature != expected_signature:
+   # Constant-time compare to avoid timing attacks
+   if not hmac.compare_digest(signature, expected_signature):
       return JsonResponse({
-         "status": "error", 
+         "status": "error",
          "message": "Payment verification failed - Invalid signature. Payment rejected for security."
       }, status=400)
 

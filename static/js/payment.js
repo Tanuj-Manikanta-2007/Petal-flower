@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.getElementById('pay-btn').onclick = function(e){
         e.preventDefault();
+        // Update contact at click time (user may have typed it after page load)
+        options.prefill.contact = document.getElementById('phone')?.value || "";
         rzp.open();
     }
 });
