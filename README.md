@@ -1,7 +1,87 @@
 # PetalCart 🌸
 
 An e-commerce platform for buying and selling fresh flowers online where users can browse flower catalogs, create shops, manage inventory, place orders, and make secure payments with real-time tracking. 💐✨
+erDiagram
+    USER {
+      int id PK
+      string username
+      string email
+    }
 
+    FLOWER_SHOP {
+      uuid shop_id PK
+      string shop_name
+      string shop_address
+      int owner_id FK
+    }
+
+    FLOWER {
+      uuid flower_id PK
+      uuid shop_id FK
+      string flowername
+      decimal price
+      string img
+    }
+
+    STOCK {
+      int id PK
+      uuid flower_id FK
+      uuid shop_id FK
+      int quantity
+    }
+
+    COMMENT {
+      uuid comment_id PK
+      int user_id FK
+      uuid flower_id FK
+      int rating
+      string body
+    }
+
+    CART {
+      uuid cart_id PK
+      int user_id FK
+    }
+
+    CART_ITEM {
+      int id PK
+      uuid cart_id FK
+      uuid flower_id FK
+      int quantity
+    }
+
+    ORDER {
+      uuid order_id PK
+      int user_id FK
+      decimal total
+      string status
+      string razorpay_order_id
+      string razorpay_payment_id
+    }
+
+    ORDER_ITEM {
+      int id PK
+      uuid order_id FK
+      uuid flower_id FK
+      int quantity
+      decimal price
+    }
+
+    USER o|--o| FLOWER_SHOP : owns
+    FLOWER_SHOP ||--o{ FLOWER : lists
+    FLOWER_SHOP ||--o{ STOCK : tracks
+    FLOWER o|--|| STOCK : stocked_as
+
+    USER ||--o{ COMMENT : writes
+    FLOWER ||--o{ COMMENT : receives
+
+    USER ||--o{ CART : has
+    CART ||--o{ CART_ITEM : contains
+    FLOWER ||--o{ CART_ITEM : chosen
+
+    USER ||--o{ ORDER : places
+    ORDER ||--o{ ORDER_ITEM : includes
+    FLOWER ||--o{ ORDER_ITEM : ordered
 ## ✨ Features
 
 ### 👤 User Management
