@@ -1,6 +1,7 @@
 # PetalCart 🌸
 
 An e-commerce platform for buying and selling fresh flowers online where users can browse flower catalogs, create shops, manage inventory, place orders, and make secure payments with real-time tracking. 💐✨
+```mermaid
 erDiagram
     USER {
       int id PK
